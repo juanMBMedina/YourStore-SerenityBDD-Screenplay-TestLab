@@ -1,0 +1,60 @@
+plugins {
+    id 'java'
+    id 'io.freefair.lombok' version '8.4'
+    id 'net.serenity-bdd.serenity-gradle-plugin' version '4.2.22'
+}
+
+group = 'us.opencart'
+version = '1.0-SNAPSHOT'
+sourceCompatibility = '11'
+targetCompatibility = '11'
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    serenityVersion = '4.2.10'
+    cucumberVersion = '7.15.0'
+    seleniumVersion = '4.31.0'
+    slf4jVersion = '2.0.12'
+    junitVintageEngineVersion = '5.9.3'
+    lombokVersion = '1.18.30'
+}
+
+dependencies {
+    // Serenity BDD
+    implementation  "net.serenity-bdd:serenity-core:${serenityVersion}"
+    implementation  "net.serenity-bdd:serenity-junit:${serenityVersion}"
+    implementation  "net.serenity-bdd:serenity-cucumber:${serenityVersion}"
+    implementation  "net.serenity-bdd:serenity-screenplay:${serenityVersion}"
+    implementation  "net.serenity-bdd:serenity-screenplay-webdriver:${serenityVersion}"
+    // Cucumber
+    implementation  "io.cucumber:cucumber-java:${cucumberVersion}"
+    implementation  "io.cucumber:cucumber-junit:${cucumberVersion}"
+    // Selenium WebDriver
+    implementation  "org.seleniumhq.selenium:selenium-java:${seleniumVersion}"
+    // Logging
+    implementation  "org.slf4j:slf4j-simple:${slf4jVersion}"
+    // JUnit Vintage
+    implementation  "org.junit.vintage:junit-vintage-engine:${junitVintageEngineVersion}"
+    // Lombok
+    compileOnly "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+}
+
+test {
+    useJUnit()
+    systemProperties System.getProperties()
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+/*
+// Serenity report configuration
+serenity {
+    reports = ['single-page-html']
+}
+ */
