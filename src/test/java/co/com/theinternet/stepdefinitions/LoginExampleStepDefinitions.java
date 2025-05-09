@@ -9,14 +9,11 @@ import net.serenitybdd.annotations.Managed;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.abilities.BrowseTheWeb;
 import org.openqa.selenium.WebDriver;
-import net.serenitybdd.core.Serenity;
-
-import java.util.Properties;
 
 import static net.serenitybdd.screenplay.GivenWhenThen.seeThat;
 import static org.hamcrest.Matchers.is;
 
-public class LoginStepDefinitions {
+public class LoginExampleStepDefinitions {
 
     @Managed
     WebDriver browser;
