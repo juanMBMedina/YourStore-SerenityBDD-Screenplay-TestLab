@@ -55,3 +55,4 @@ tasks.withType(JavaCompile).configureEach {
 serenity {
     reports = ["html", "single-page-html"]
 }
+
