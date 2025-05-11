@@ -16,6 +16,7 @@ public class HomePage extends PageObject {
     public static final Target My_ACC_TOP_NAV_BAR = TOP_NAV_ITEM_CONTAINS_TEXT.of("span","My Account");
     public static final Target LOGIN_OPT_NAV_BAR = TOP_NAV_ITEM_CONTAINS_TEXT.of("a","Login");
     public static final Target LOGOUT_OPT_NAV_BAR = TOP_NAV_ITEM_CONTAINS_TEXT.of("a","Logout");
+    public static final Target REGISTER_NAV_BAR = TOP_NAV_ITEM_CONTAINS_TEXT.of("a","Register");
 
     public static String getBaseUrl() {
         EnvironmentVariables env = SystemEnvironmentVariables.createEnvironmentVariables();
