@@ -5,17 +5,16 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import net.serenitybdd.screenplay.questions.Text;
 import us.opencart.models.SearchItemNavBar;
-import us.opencart.tasks.GoToLoginPage;
-import us.opencart.tasks.GoToWishListPage;
-import us.opencart.tasks.SearchItem;
-import us.opencart.tasks.SelectOptionOfItem;
+import us.opencart.tasks.*;
 import us.opencart.ui.HomePage;
 import us.opencart.ui.WishListPage;
+import us.opencart.utils.UiAssertions;
 
 import static net.serenitybdd.screenplay.GivenWhenThen.seeThat;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorInTheSpotlight;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
+import static net.serenitybdd.screenplay.matchers.WebElementStateMatchers.isVisible;
+import static net.serenitybdd.screenplay.questions.WebElementQuestion.the;
+import static org.hamcrest.Matchers.*;
 
 public class AddToCartStepDefinitions {
 
@@ -61,4 +60,19 @@ public class AddToCartStepDefinitions {
                 seeThat(Text.of(WishListPage.ITEM_NAME_TABLE.of(itemName)), containsString(itemName))
         );
     }
+
+    @When("the user clicks the {string} link for the item called {string} in Wish List page")
+    public void theUserClicksTheLinkForTheItemCalledInWishListPage(String option, String itemName) {
+        theActorInTheSpotlight().remember(ITEM_NAME_LABEL, itemName);
+        theActorInTheSpotlight().wasAbleTo(DeleteItemWishList.with(itemName, option));
+    }
+    @Then("the user should see a message confirming the successful removal from the Wish List")
+    public void theUserShouldSeeAMessageConfirmingTheSuccessfulRemovalFromTheWishList() {
+        String itemName = theActorInTheSpotlight().recall(ITEM_NAME_LABEL);
+        theActorInTheSpotlight().should(
+                seeThat(the(WishListPage.ITEM_NAME_TABLE.of(itemName)), not(isVisible()))
+        );
+        UiAssertions.shouldSeeTextOnPage(theActorInTheSpotlight(), WishListPage.WISH_LIST_SUCCESS_MODIFY_MESSAGE);
+    }
+
 }
