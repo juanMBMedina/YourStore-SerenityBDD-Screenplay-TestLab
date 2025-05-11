@@ -15,6 +15,7 @@ public class HomePage extends PageObject {
     public static final String ADD_TO_CART_TEXT = "Add to Cart";
 
     public static final String COMPARISON_SUCCESS_MESSAGE = "Success: You have added %s to your product comparison!";
+    public static final String WISH_LIST_SUCCESS_MESSAGE = "Success: You have added %s to your wish list!";
 
     public static final Target ITEM_CONTAINS_TEXT = Target.the("Item contains text: {0}").locatedBy("//*[contains(text(),'{0}')]");
     public static final Target RIGHT_MENU_ITEM_CONTAINS_TEXT = Target.the("Right item and contains text: {0}").locatedBy("//aside[@id='column-right']//*[contains(text(),'{0}')]");
@@ -23,6 +24,7 @@ public class HomePage extends PageObject {
     public static final Target LOGIN_OPT_NAV_BAR = TOP_NAV_ITEM_CONTAINS_TEXT.of("a","Login");
     public static final Target LOGOUT_OPT_NAV_BAR = TOP_NAV_ITEM_CONTAINS_TEXT.of("a","Logout");
     public static final Target REGISTER_NAV_BAR = TOP_NAV_ITEM_CONTAINS_TEXT.of("a","Register");
+    public static final Target WISH_LIST_NAV_BAR = TOP_NAV_ITEM_CONTAINS_TEXT.of("span","Wish List");
     public static final Target CATEGORY_ALONE_TARGET = Target.the("Target of item with Category: {0}").locatedBy("//nav[@id='menu']//*[text()='{0}']");
     public static final Target CATEGORY_SUBCATEGORY_TARGET = Target.the("Target of item with Category: {0} and Subcategory {1}").locatedBy("//nav[@id='menu']//*[text()='Desktops']/ancestor::li//a[contains(text(),'{1}')]");
     public static final Target ITEM_BOX_TARGET = Target.the("Target of item box with Name: {0}").locatedBy("//*[text()='{0}']/ancestor::div[@class='product-thumb']");
