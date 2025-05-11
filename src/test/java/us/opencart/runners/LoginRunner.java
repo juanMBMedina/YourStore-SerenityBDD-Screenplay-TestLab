@@ -11,7 +11,7 @@ import org.junit.runner.RunWith;
         plugin = {"pretty"},
         monochrome = false,
         snippets = CucumberOptions.SnippetType.CAMELCASE,
-        tags = "@YS-6"
+        tags = "@your_store_login_feature"
 )
 public class LoginRunner {
 }

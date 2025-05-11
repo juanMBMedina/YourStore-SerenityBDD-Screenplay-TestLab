@@ -46,5 +46,17 @@ public class TestDataLoader {
     public static LoginUser loadCorrectUser() {
         return load("dataLoginFeature.json", "loginExistUser", LoginUser.class);
     }
+
+    public static LoginUser loadWrongLabelUser() {
+        // Can Throws: TestDataLoadException
+        return load("wrongDataLoginFeature.json", "loginWrongUser", LoginUser.class);
+    }
+
+    public static LoginUser loadKeyDoesNotExistUser() {
+        // Can Throws: IllegalArgumentException
+        return load("dataLoginFeature.json", "noKey", LoginUser.class);
+
+    }
+
 }
 

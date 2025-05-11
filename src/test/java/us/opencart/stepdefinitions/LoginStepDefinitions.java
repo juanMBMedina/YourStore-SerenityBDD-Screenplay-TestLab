@@ -3,9 +3,12 @@ package us.opencart.stepdefinitions;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.actions.Click;
 import net.serenitybdd.screenplay.actions.Open;
 import net.serenitybdd.screenplay.questions.Text;
+import us.opencart.exceptions.TestDataLoadException;
+import us.opencart.questions.ShouldThrowException;
 import us.opencart.tasks.FillLoginForm;
 import us.opencart.tasks.GoToLoginPage;
 import us.opencart.tasks.LogOutUser;
@@ -79,6 +82,35 @@ public class LoginStepDefinitions {
         theActorInTheSpotlight().should(
                 seeThat(the(ITEM_CONTAINS_TEXT.of(LoginPage.LOGIN_WRONG_MESSAGE)), isVisible())
         );
+    }
+
+    @When("the user sends credentials with username {string} and password {string} for {int} attempts")
+    public void theUserSendsCredentialsWithUsernameAndPasswordForAttempts(String email, String password, Integer count) {
+        Actor tempActor = theActorInTheSpotlight();
+        int attemp = 0;
+        do {
+            theUserEntersCredentialsWithUsernameAndPassword(email, password);
+            theUserSubmitsTheLoginForm();
+            attemp++;
+        } while (attemp < count && ITEM_CONTAINS_TEXT.of(LoginPage.LOGIN_WRONG_MESSAGE).resolveFor(tempActor).isVisible());
+    }
+
+    @Then("the user should see an error message indicating that the maximum number of login attempts has been reached")
+    public void theUserShouldSeeAnErrorMessageIndicatingThatTheMaximumNumberOfLoginAttemptsHasBeenReached() {
+        theActorInTheSpotlight().should(
+                seeThat(the(ITEM_CONTAINS_TEXT.of(LoginPage.MAX_LOGIN_MESSAGE)), isVisible())
+        );
+    }
+
+    @Then("the user should see an error exception in the Data Loader")
+    public void theUserShouldSeeAnErrorExceptionInTheDataLoader() {
+        theActorInTheSpotlight().should(
+                seeThat(ShouldThrowException.whenExecuting(TestDataLoader::loadWrongLabelUser, TestDataLoadException.class))
+        );
+        theActorInTheSpotlight().should(
+                seeThat(ShouldThrowException.whenExecuting(TestDataLoader::loadKeyDoesNotExistUser, IllegalArgumentException.class))
+        );
+
     }
 
 }

@@ -9,6 +9,7 @@ public class LoginPage extends HomePage {
 
     public static final String LOGOUT_MESSAGE = "You have been logged off your account. It is now safe to leave the computer.";
     public static final String LOGIN_WRONG_MESSAGE = " Warning: No match for E-Mail Address and/or Password.";
+    public static final String MAX_LOGIN_MESSAGE = "Warning: Your account has exceeded allowed number of login attempts. Please try again in 1 hour.";
     public static final List<String> EXPECTED_HEADERS = List.of(
             "My Account",
             "My Orders",
