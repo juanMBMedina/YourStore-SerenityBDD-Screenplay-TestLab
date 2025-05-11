@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Automated Testing Plan with Serenity - Screenplay
 
 This repository contains the implementation of an automated testing plan developed using Serenity Screenplay. The project was created as part of the automation course offered by Academia QA and adapted for use with the Your Store demo application.
