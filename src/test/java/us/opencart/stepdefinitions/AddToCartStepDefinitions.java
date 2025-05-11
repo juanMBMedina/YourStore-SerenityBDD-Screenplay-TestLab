@@ -104,4 +104,18 @@ public class AddToCartStepDefinitions {
                 seeThat(the(AddToCartPage.ITEM_NAME_TABLE.of(itemName)), isVisible())
         );
     }
+
+    @When("the user clicks the {string} link for the item called {string} in Add to Cart page")
+    public void theUserClicksTheLinkForTheItemCalledInAddToCartPage(String option, String itemName) {
+        theUserClicksTheLinkForTheItemCalledInWishListPage(option, itemName);
+    }
+
+    @Then("the user should see a message confirming the successful removal from the Add to Cart")
+    public void theUserShouldSeeAMessageConfirmingTheSuccessfulRemovalFromTheAddToCart() {
+        String itemName = theActorInTheSpotlight().recall(ITEM_NAME_LABEL);
+        theActorInTheSpotlight().should(
+                seeThat(the(AddToCartPage.ITEM_NAME_TABLE.of(itemName)), not(isVisible()))
+        );
+    }
+
 }
