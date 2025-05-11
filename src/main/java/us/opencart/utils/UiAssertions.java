@@ -1,6 +1,7 @@
 package us.opencart.utils;
 
 import net.serenitybdd.screenplay.Actor;
+import net.serenitybdd.screenplay.targets.Target;
 import us.opencart.ui.HomePage;
 
 import static net.serenitybdd.screenplay.GivenWhenThen.seeThat;
@@ -14,6 +15,14 @@ public class UiAssertions {
         actor.should(
                 seeThat("The element with text '" + expectedText + "' is visible",
                         the(HomePage.ITEM_CONTAINS_TEXT.of(expectedText)),
+                        isVisible())
+        );
+    }
+
+    public static void shouldSeeElementOnPage(Actor actor, Target expectedTarget) {
+        actor.should(
+                seeThat("The element with text '" + expectedTarget + "' is visible",
+                        the(expectedTarget),
                         isVisible())
         );
     }

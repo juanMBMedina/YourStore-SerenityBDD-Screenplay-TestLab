@@ -14,14 +14,11 @@ import us.opencart.tasks.GoToLoginPage;
 import us.opencart.tasks.LogOutUser;
 import us.opencart.ui.HomePage;
 import us.opencart.ui.LoginPage;
-import us.opencart.ui.RegisterPage;
 import us.opencart.utils.TestDataLoader;
 import us.opencart.utils.UiAssertions;
 
 import static net.serenitybdd.screenplay.GivenWhenThen.seeThat;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorInTheSpotlight;
-import static net.serenitybdd.screenplay.matchers.WebElementStateMatchers.isVisible;
-import static net.serenitybdd.screenplay.questions.WebElementQuestion.the;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static us.opencart.ui.HomePage.ITEM_CONTAINS_TEXT;
 
