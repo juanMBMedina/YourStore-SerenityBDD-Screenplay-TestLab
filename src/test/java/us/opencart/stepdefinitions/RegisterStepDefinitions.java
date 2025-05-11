@@ -8,7 +8,7 @@ import net.serenitybdd.screenplay.actions.Open;
 import us.opencart.builders.RegisterUserBuilder;
 import us.opencart.models.RegisterUser;
 import us.opencart.tasks.FillRegisterForm;
-import us.opencart.tasks.GoToRegisterPage;
+import us.opencart.tasks.NavigateTo;
 import us.opencart.ui.HomePage;
 import us.opencart.ui.RegisterPage;
 import us.opencart.utils.UiAssertions;
@@ -25,7 +25,7 @@ public class RegisterStepDefinitions {
     public void theUserIsOnTheRegistrationPageOfYourStore() {
         theActorInTheSpotlight().wasAbleTo(
                 Open.url(HomePage.getBaseUrl()),
-                GoToRegisterPage.run()
+                NavigateTo.register()
         );
     }
 

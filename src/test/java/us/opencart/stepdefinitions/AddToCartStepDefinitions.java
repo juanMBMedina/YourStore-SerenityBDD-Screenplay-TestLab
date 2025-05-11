@@ -5,7 +5,10 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import net.serenitybdd.screenplay.questions.Text;
 import us.opencart.models.SearchItemNavBar;
-import us.opencart.tasks.*;
+import us.opencart.tasks.DeleteItemTable;
+import us.opencart.tasks.NavigateTo;
+import us.opencart.tasks.SearchItem;
+import us.opencart.tasks.SelectOptionOfItem;
 import us.opencart.ui.AddToCartPage;
 import us.opencart.ui.HomePage;
 import us.opencart.ui.WishListPage;
@@ -17,7 +20,6 @@ import static net.serenitybdd.screenplay.matchers.WebElementStateMatchers.isVisi
 import static net.serenitybdd.screenplay.questions.WebElementQuestion.the;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
-import static us.opencart.ui.HomePage.ADD_TO_CART_SUCCESS_MESSAGE_FORMAT;
 
 public class AddToCartStepDefinitions {
 
@@ -55,7 +57,7 @@ public class AddToCartStepDefinitions {
 
     @Then("the user is on the Wish List page")
     public void theUserIsOnTheWishListPage() {
-        theActorInTheSpotlight().wasAbleTo(GoToWishListPage.run());
+        theActorInTheSpotlight().wasAbleTo(NavigateTo.wishList());
     }
 
     @Then("the user should see the selected item in the Wish List")
@@ -92,7 +94,7 @@ public class AddToCartStepDefinitions {
 
     @Then("the user is on the add to Cart Page")
     public void theUserIsOnTheAddToCartPage() {
-        theActorInTheSpotlight().wasAbleTo(GoToAddToCartPage.run());
+        theActorInTheSpotlight().wasAbleTo(NavigateTo.addToCart());
     }
 
     @Then("the user should see the selected item in the Add to Cart")

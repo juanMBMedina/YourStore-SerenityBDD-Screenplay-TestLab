@@ -10,7 +10,7 @@ import net.serenitybdd.screenplay.questions.Text;
 import us.opencart.exceptions.TestDataLoadException;
 import us.opencart.questions.ShouldThrowException;
 import us.opencart.tasks.FillLoginForm;
-import us.opencart.tasks.GoToLoginPage;
+import us.opencart.tasks.NavigateTo;
 import us.opencart.tasks.LogOutUser;
 import us.opencart.ui.HomePage;
 import us.opencart.ui.LoginPage;
@@ -28,7 +28,7 @@ public class LoginStepDefinitions {
     public void theUserIsOnTheLoginPageOfYourStore() {
         theActorInTheSpotlight().wasAbleTo(
                 Open.url(HomePage.getBaseUrl()),
-                GoToLoginPage.run()
+                NavigateTo.login()
         );
     }
 

@@ -14,6 +14,8 @@ public class HomePage extends PageObject {
     public static final String WISH_LIST_OPTION = "Add to Wish List";
     public static final String ADD_TO_CART_OPTION = "Add to Cart";
     public static final String REMOVE_OPTION = "Remove";
+    public static final String LOGIN_OPTION = "Login";
+    public static final String REGISTER_OPTION = "Register";
 
     public static final String COMPARISON_SUCCESS_MESSAGE = "Success: You have added %s to your product comparison!";
     public static final String WISH_LIST_SUCCESS_MESSAGE = "Success: You have added %s to your wish list!";
