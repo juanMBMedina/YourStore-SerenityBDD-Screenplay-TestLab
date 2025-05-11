@@ -23,11 +23,11 @@ public class SelectOptionOfItem implements Task {
     @Override
     public <T extends Actor> void performAs(T actor) {
         switch (optionItem) {
-            case COMPARISON_TEXT:
-            case WISH_LIST_TEXT:
+            case COMPARISON_OPTION:
+            case WISH_LIST_OPTION:
                 actor.wasAbleTo(Click.on(HomePage.ITEM_BUTTON.of(itemName, optionItem)));
                 break;
-            case ADD_TO_CART_TEXT:
+            case ADD_TO_CART_OPTION:
                 actor.wasAbleTo(Click.on(HomePage.ADD_TO_CART_BUTTON.of(itemName, optionItem)));
                 break;
             default:

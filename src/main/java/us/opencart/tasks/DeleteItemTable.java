@@ -8,17 +8,17 @@ import net.serenitybdd.screenplay.actions.Click;
 import us.opencart.exceptions.OptionNotFoundException;
 import us.opencart.ui.WishListPage;
 
+import static us.opencart.ui.HomePage.ADD_TO_CART_OPTION;
+import static us.opencart.ui.WishListPage.REMOVE_OPTION;
+
 @AllArgsConstructor
-public class DeleteItemWishList implements Task {
-
-    private static final String REMOVE_OPTION = "Remove";
-    private static final String ADD_TO_CART_OPTION = "Add to Cart";
-
+public class DeleteItemTable implements Task {
+    // Apply to AddToCartPage and WishListPage
     private final String itemName;
     private final String option;
 
-    public static DeleteItemWishList with(String itemName, String option) {
-        return Tasks.instrumented(DeleteItemWishList.class, itemName, option);
+    public static DeleteItemTable with(String itemName, String option) {
+        return Tasks.instrumented(DeleteItemTable.class, itemName, option);
     }
 
     @Override
