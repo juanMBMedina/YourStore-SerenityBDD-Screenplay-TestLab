@@ -69,4 +69,16 @@ public class LoginStepDefinitions {
         );
     }
 
+    @Given("the user enters credentials with username {string} and password {string}")
+    public void theUserEntersCredentialsWithUsernameAndPassword(String email, String password) {
+        theActorInTheSpotlight().wasAbleTo(FillLoginForm.with(email, password));
+    }
+
+    @Then("the user should see a unsuccessful login message")
+    public void theUserShouldSeeAUnsuccessfulLoginMessage() {
+        theActorInTheSpotlight().should(
+                seeThat(the(ITEM_CONTAINS_TEXT.of(LoginPage.LOGIN_WRONG_MESSAGE)), isVisible())
+        );
+    }
+
 }
