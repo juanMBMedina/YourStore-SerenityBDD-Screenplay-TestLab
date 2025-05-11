@@ -11,13 +11,11 @@ import us.opencart.tasks.FillRegisterForm;
 import us.opencart.tasks.GoToRegisterPage;
 import us.opencart.ui.HomePage;
 import us.opencart.ui.RegisterPage;
+import us.opencart.utils.UiAssertions;
 
-import static net.serenitybdd.screenplay.GivenWhenThen.seeThat;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorInTheSpotlight;
-import static net.serenitybdd.screenplay.matchers.WebElementStateMatchers.isVisible;
-import static net.serenitybdd.screenplay.questions.WebElementQuestion.the;
-import static us.opencart.ui.HomePage.ITEM_CONTAINS_TEXT;
 import static us.opencart.utils.TestDataLoader.loadExistUserRegister;
+import static us.opencart.utils.TestDataLoader.loadExistUserWithoutPrivacyRegister;
 
 public class RegisterStepDefinitions {
 
@@ -49,9 +47,7 @@ public class RegisterStepDefinitions {
 
     @Then("the user should see a successful registration message")
     public void theUserShouldSeeASuccessfulRegistrationMessage() {
-        theActorInTheSpotlight().should(
-                seeThat(the(ITEM_CONTAINS_TEXT.of(RegisterPage.SUCCESS_REGISTER_MESSAGE)), isVisible())
-        );
+        UiAssertions.shouldSeeTextOnPage(theActorInTheSpotlight(), RegisterPage.SUCCESS_REGISTER_MESSAGE);
     }
 
     @Given("the user enters an existing user in a test file")
@@ -61,19 +57,26 @@ public class RegisterStepDefinitions {
 
     @Then("the user should see a user already exists error message")
     public void theUserShouldSeeAUserAlreadyExistsErrorMessage() {
-        theActorInTheSpotlight().should(
-                seeThat(the(ITEM_CONTAINS_TEXT.of(RegisterPage.USER_EXIST_MESSAGE)), isVisible())
-        );
+        UiAssertions.shouldSeeTextOnPage(theActorInTheSpotlight(), RegisterPage.USER_EXIST_MESSAGE);
     }
 
     @Given("the user enters an existing user with empty params")
     public void theUserEntersAnExistingUserWithEmptyParams(RegisterUser user) {
         theActorInTheSpotlight().wasAbleTo(FillRegisterForm.with(user));
     }
+
     @Then("the user should see an error message {string} is void")
     public void theUserShouldSeeAnErrorMessageIsVoid(String paramUserRegister) {
-        theActorInTheSpotlight().should(
-                seeThat(the(ITEM_CONTAINS_TEXT.of(RegisterPage.WITHOUT_PARAMS_MESSAGES.get(paramUserRegister))), isVisible())
-        );
+        UiAssertions.shouldSeeTextOnPage(theActorInTheSpotlight(), RegisterPage.WITHOUT_PARAMS_MESSAGES.get(paramUserRegister));
+    }
+
+    @Given("the user enters an existing user in a test file without privacy")
+    public void theUserEntersAnExistingUserInATestFileWithoutPrivacy() {
+        theActorInTheSpotlight().wasAbleTo(FillRegisterForm.with(loadExistUserWithoutPrivacyRegister()));
+    }
+
+    @Then("the user should see a an error message when the register form doesn't have a privacy check OK")
+    public void theUserShouldSeeAAnErrorMessageWhenTheRegisterFormDoesnTHaveAPrivacyCheckOK() {
+        UiAssertions.shouldSeeTextOnPage(theActorInTheSpotlight(), RegisterPage.WITHOUT_PRIVACY_MESSAGE);
     }
 }

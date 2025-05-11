@@ -18,6 +18,7 @@ public class RegisterPage extends HomePage {
             Map.entry("password", "Password must be between 4 and 20 characters!"),
             Map.entry("passwordConfirm", "Password confirmation does not match password!")
     );
+    public static final String WITHOUT_PRIVACY_MESSAGE = "Warning: You must agree to the Privacy Policy!";
 
 
     public static final Target INPUT_TEXT_FIRST_NAME = Target.the("First Name input text of Register form").located(By.id("input-firstname"));

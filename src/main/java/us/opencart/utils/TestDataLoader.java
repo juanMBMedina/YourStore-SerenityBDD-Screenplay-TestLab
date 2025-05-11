@@ -61,8 +61,10 @@ public class TestDataLoader {
 
     public static RegisterUser loadExistUserRegister() {
         return load("dataRegisterFeature.json", "registerUser", RegisterUser.class);
-
     }
 
+    public static RegisterUser loadExistUserWithoutPrivacyRegister() {
+        return load("dataRegisterFeature.json", "registerUserNoPrivacy", RegisterUser.class);
+    }
 }
 

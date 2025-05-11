@@ -14,7 +14,9 @@ import us.opencart.tasks.GoToLoginPage;
 import us.opencart.tasks.LogOutUser;
 import us.opencart.ui.HomePage;
 import us.opencart.ui.LoginPage;
+import us.opencart.ui.RegisterPage;
 import us.opencart.utils.TestDataLoader;
+import us.opencart.utils.UiAssertions;
 
 import static net.serenitybdd.screenplay.GivenWhenThen.seeThat;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorInTheSpotlight;
@@ -67,9 +69,7 @@ public class LoginStepDefinitions {
 
     @Then("the user should see a successful logout message")
     public void theUserShouldSeeASuccessfulLogoutMessage() {
-        theActorInTheSpotlight().should(
-                seeThat(the(ITEM_CONTAINS_TEXT.of(LoginPage.LOGOUT_MESSAGE)), isVisible())
-        );
+        UiAssertions.shouldSeeTextOnPage(theActorInTheSpotlight(), LoginPage.LOGOUT_MESSAGE);
     }
 
     @Given("the user enters credentials with username {string} and password {string}")
@@ -79,9 +79,7 @@ public class LoginStepDefinitions {
 
     @Then("the user should see a unsuccessful login message")
     public void theUserShouldSeeAUnsuccessfulLoginMessage() {
-        theActorInTheSpotlight().should(
-                seeThat(the(ITEM_CONTAINS_TEXT.of(LoginPage.LOGIN_WRONG_MESSAGE)), isVisible())
-        );
+        UiAssertions.shouldSeeTextOnPage(theActorInTheSpotlight(), LoginPage.LOGIN_WRONG_MESSAGE);
     }
 
     @When("the user sends credentials with username {string} and password {string} for {int} attempts")
@@ -97,9 +95,7 @@ public class LoginStepDefinitions {
 
     @Then("the user should see an error message indicating that the maximum number of login attempts has been reached")
     public void theUserShouldSeeAnErrorMessageIndicatingThatTheMaximumNumberOfLoginAttemptsHasBeenReached() {
-        theActorInTheSpotlight().should(
-                seeThat(the(ITEM_CONTAINS_TEXT.of(LoginPage.MAX_LOGIN_MESSAGE)), isVisible())
-        );
+        UiAssertions.shouldSeeTextOnPage(theActorInTheSpotlight(), LoginPage.MAX_LOGIN_MESSAGE);
     }
 
     @Then("the user should see an error exception in the Data Loader")
