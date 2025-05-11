@@ -8,6 +8,7 @@ import java.util.function.Function;
 public class RegisterPage extends HomePage {
 
     public static final String SUCCESS_REGISTER_MESSAGE = "Congratulations! Your new account has been successfully created!";
+    public static final String USER_EXIST_MESSAGE = "Warning: E-Mail Address is already registered!";
 
     public static final Target INPUT_TEXT_FIRST_NAME = Target.the("First Name input text of Register form").located(By.id("input-firstname"));
     public static final Target INPUT_TEXT_LAST_NAME = Target.the("Last Name input text of Register form").located(By.id("input-lastname"));

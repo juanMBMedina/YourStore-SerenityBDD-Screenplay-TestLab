@@ -36,7 +36,7 @@ public class LoginStepDefinitions {
     @Given("the user enters credentials with test file")
     public void theUserEntersCredentialsWithTestFile() {
         theActorInTheSpotlight().wasAbleTo(
-                FillLoginForm.with(TestDataLoader.loadCorrectUser())
+                FillLoginForm.with(TestDataLoader.loadCorrectUserLogin())
         );
     }
 
@@ -105,10 +105,10 @@ public class LoginStepDefinitions {
     @Then("the user should see an error exception in the Data Loader")
     public void theUserShouldSeeAnErrorExceptionInTheDataLoader() {
         theActorInTheSpotlight().should(
-                seeThat(ShouldThrowException.whenExecuting(TestDataLoader::loadWrongLabelUser, TestDataLoadException.class))
+                seeThat(ShouldThrowException.whenExecuting(TestDataLoader::loadWrongLabelUserLogin, TestDataLoadException.class))
         );
         theActorInTheSpotlight().should(
-                seeThat(ShouldThrowException.whenExecuting(TestDataLoader::loadKeyDoesNotExistUser, IllegalArgumentException.class))
+                seeThat(ShouldThrowException.whenExecuting(TestDataLoader::loadKeyDoesNotExistUserLogin, IllegalArgumentException.class))
         );
 
     }

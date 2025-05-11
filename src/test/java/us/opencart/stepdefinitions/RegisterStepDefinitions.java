@@ -17,6 +17,7 @@ import static net.serenitybdd.screenplay.actors.OnStage.theActorInTheSpotlight;
 import static net.serenitybdd.screenplay.matchers.WebElementStateMatchers.isVisible;
 import static net.serenitybdd.screenplay.questions.WebElementQuestion.the;
 import static us.opencart.ui.HomePage.ITEM_CONTAINS_TEXT;
+import static us.opencart.utils.TestDataLoader.loadExistUserRegister;
 
 public class RegisterStepDefinitions {
 
@@ -50,6 +51,18 @@ public class RegisterStepDefinitions {
     public void theUserShouldSeeASuccessfulRegistrationMessage() {
         theActorInTheSpotlight().should(
                 seeThat(the(ITEM_CONTAINS_TEXT.of(RegisterPage.SUCCESS_REGISTER_MESSAGE)), isVisible())
+        );
+    }
+
+    @Given("the user enters an existing user in a test file")
+    public void theUserEntersAnExistingUserInATestFile() {
+        theActorInTheSpotlight().wasAbleTo(FillRegisterForm.with(loadExistUserRegister()));
+    }
+
+    @Then("the user should see a user already exists error message")
+    public void theUserShouldSeeAUserAlreadyExistsErrorMessage() {
+        theActorInTheSpotlight().should(
+                seeThat(the(ITEM_CONTAINS_TEXT.of(RegisterPage.USER_EXIST_MESSAGE)), isVisible())
         );
     }
 }
