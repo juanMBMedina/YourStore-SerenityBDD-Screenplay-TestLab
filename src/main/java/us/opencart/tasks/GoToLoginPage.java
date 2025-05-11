@@ -16,7 +16,7 @@ public class GoToLoginPage implements Task {
     public <T extends Actor> void performAs(T actor) {
         actor.wasAbleTo(
                 Click.on(LoginPage.My_ACC_TOP_NAV_BAR),
-                Click.on(LoginPage.LOGIN_TOP_NAV_BAR)
+                Click.on(LoginPage.LOGIN_OPT_NAV_BAR)
         );
     }
 }

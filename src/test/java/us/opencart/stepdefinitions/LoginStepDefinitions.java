@@ -1,6 +1,5 @@
 package us.opencart.stepdefinitions;
 
-
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -9,13 +8,17 @@ import net.serenitybdd.screenplay.actions.Open;
 import net.serenitybdd.screenplay.questions.Text;
 import us.opencart.tasks.FillLoginForm;
 import us.opencart.tasks.GoToLoginPage;
+import us.opencart.tasks.LogOutUser;
 import us.opencart.ui.HomePage;
 import us.opencart.ui.LoginPage;
 import us.opencart.utils.TestDataLoader;
 
 import static net.serenitybdd.screenplay.GivenWhenThen.seeThat;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorInTheSpotlight;
+import static net.serenitybdd.screenplay.matchers.WebElementStateMatchers.isVisible;
+import static net.serenitybdd.screenplay.questions.WebElementQuestion.the;
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static us.opencart.ui.HomePage.ITEM_CONTAINS_TEXT;
 
 public class LoginStepDefinitions {
 
@@ -48,4 +51,22 @@ public class LoginStepDefinitions {
                 )
         );
     }
+
+    @When("the user can do logout by Top Bar option")
+    public void theUserCanDoLogoutByTopBarOption() {
+        theActorInTheSpotlight().wasAbleTo(LogOutUser.withNavBar());
+    }
+
+    @When("the user can do logout by Right Bar option")
+    public void theUserCanDoLogoutByRightBarOption() {
+        theActorInTheSpotlight().wasAbleTo(LogOutUser.withRightMenu());
+    }
+
+    @Then("the user should see a successful logout message")
+    public void theUserShouldSeeASuccessfulLogoutMessage() {
+        theActorInTheSpotlight().should(
+                seeThat(the(ITEM_CONTAINS_TEXT.of(LoginPage.LOGOUT_MESSAGE)), isVisible())
+        );
+    }
+
 }
