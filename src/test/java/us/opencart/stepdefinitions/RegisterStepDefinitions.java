@@ -65,4 +65,15 @@ public class RegisterStepDefinitions {
                 seeThat(the(ITEM_CONTAINS_TEXT.of(RegisterPage.USER_EXIST_MESSAGE)), isVisible())
         );
     }
+
+    @Given("the user enters an existing user with empty params")
+    public void theUserEntersAnExistingUserWithEmptyParams(RegisterUser user) {
+        theActorInTheSpotlight().wasAbleTo(FillRegisterForm.with(user));
+    }
+    @Then("the user should see an error message {string} is void")
+    public void theUserShouldSeeAnErrorMessageIsVoid(String paramUserRegister) {
+        theActorInTheSpotlight().should(
+                seeThat(the(ITEM_CONTAINS_TEXT.of(RegisterPage.WITHOUT_PARAMS_MESSAGES.get(paramUserRegister))), isVisible())
+        );
+    }
 }

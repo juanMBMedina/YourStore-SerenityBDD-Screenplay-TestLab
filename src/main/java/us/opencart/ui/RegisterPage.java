@@ -3,12 +3,22 @@ package us.opencart.ui;
 import net.serenitybdd.screenplay.targets.Target;
 import org.openqa.selenium.By;
 
+import java.util.Map;
 import java.util.function.Function;
 
 public class RegisterPage extends HomePage {
 
     public static final String SUCCESS_REGISTER_MESSAGE = "Congratulations! Your new account has been successfully created!";
     public static final String USER_EXIST_MESSAGE = "Warning: E-Mail Address is already registered!";
+    public static final Map<String, String> WITHOUT_PARAMS_MESSAGES = Map.ofEntries(
+            Map.entry("firstName", "First Name must be between 1 and 32 characters!"),
+            Map.entry("lastName", "Last Name must be between 1 and 32 characters!"),
+            Map.entry("email", "E-Mail Address does not appear to be valid!"),
+            Map.entry("telephone", "Telephone must be between 3 and 32 characters!"),
+            Map.entry("password", "Password must be between 4 and 20 characters!"),
+            Map.entry("passwordConfirm", "Password confirmation does not match password!")
+    );
+
 
     public static final Target INPUT_TEXT_FIRST_NAME = Target.the("First Name input text of Register form").located(By.id("input-firstname"));
     public static final Target INPUT_TEXT_LAST_NAME = Target.the("Last Name input text of Register form").located(By.id("input-lastname"));
