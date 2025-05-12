@@ -74,7 +74,7 @@ Feature: User Add Items to Cart in Your Store Page
       | Desktops | Mac         | iMac     | Add to Cart | Remove |
 
   @YS-16
-  Scenario: Validate error message when select wrong option
+  Scenario: Validate error message when select wrong option in Body Item
     When the user searches for an item in the navigation bar
     # If the option doesn't have a subcategory, you must add "N/A" (default value) text or remove the subcategory column
       | category | subcategory | itemName                |
@@ -82,7 +82,7 @@ Feature: User Add Items to Cart in Your Store Page
     Then the user clicks the "Wrong Option" link for the item and should see exception option
 
   @YS-16
-  Scenario Outline: Validate error message when select wrong option
+  Scenario Outline: Validate error message when select wrong option in Table Item
     Given the user searches for an item in the navigation bar
       # If the option doesn't have subcategory you must add N/A (default value) text or delete subcategory column
       | category   | subcategory   | itemName   |
@@ -95,3 +95,4 @@ Feature: User Add Items to Cart in Your Store Page
     Examples:
       | category | subcategory | itemName | page        | action       |
       | Desktops | Mac         | iMac     | Add to Cart | Wrong Option |
+      | Desktops | Mac         | iMac     | Add to Cart | Add to Cart  |

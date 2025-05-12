@@ -11,7 +11,7 @@ import org.junit.runner.RunWith;
         plugin = {"pretty"},
         monochrome = false,
         snippets = CucumberOptions.SnippetType.CAMELCASE,
-        tags = "@YS-13"
+        tags = "@your_store_add_to_cart_feature"
 )
 public class AddToCartRunner {
 }
