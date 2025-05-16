@@ -38,6 +38,7 @@ pipeline {
                     dir(repoDir){
                         script{
                             echo "Compile an run all project in: ${repoDir}"
+                            sh "chmod +x functions.sh runAllTest.sh"
                             sh "bash ./runAllTest.sh"
                         }
                     }

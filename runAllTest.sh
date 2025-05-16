@@ -2,6 +2,7 @@
 
 # Load the run_test function
 source ./functions.sh
+chmod +x ./gradlew
 
 # Clean previous test results
 echo "Cleaning previous test results..."
