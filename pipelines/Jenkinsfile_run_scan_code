@@ -1,8 +1,17 @@
+def extractPropertyValue(file, property) {
+    return sh(script: """
+        grep "^${property}=" ${file} | sed "s/^${property}=//"
+    """, returnStdout: true).trim()
+}
+
 pipeline {
     agent any
 
+    env{
+        PROJECT_NAME = extractPropertyValue('sonar-scanner.properties', 'sonar.projectName'),
+    }
+
     parameters {
-        string(name: 'PROJECT_NAME', defaultValue: 'YourStore-SerenityBDD-Screenplay-TestLab', description: 'Project Base Directory Repo')
         string(name: 'REPO_URL', defaultValue: 'git@github.com:juanMBMedina/YourStore-SerenityBDD-Screenplay-TestLab.git', description: 'SSH URL of the repository')
         string(name: 'DEFAULT_BRANCH', defaultValue: 'develop', description: 'Branch of the repository')
     }
@@ -12,6 +21,22 @@ pipeline {
     }
 
     stages {
+
+        stage('Build Project') {
+            steps {
+                script {
+                    def repoDir = "${BASE_DIR}/${PROJECT_NAME}"
+                    build(
+                        job: 'Run-Test-Suite-${PROJECT_NAME}',
+                        parameters: [
+                            string(name: 'SUITE', value: 'AllTests'),
+                            string(name: 'BROWSER', value: 'Chrome'),
+                            string(name: 'PROJECT_NAME', value: PROJECT_NAME)
+                        ]
+                    )
+                }
+            }
+        }
 
         stage('Running Sonarqube checking') {
             steps {
