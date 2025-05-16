@@ -7,7 +7,7 @@ import net.serenitybdd.screenplay.Tasks;
 import net.serenitybdd.screenplay.actions.Clear;
 import net.serenitybdd.screenplay.actions.SendKeys;
 import us.opencart.models.LoginUser;
-import us.opencart.ui.LoginPage;
+import us.opencart.ui.LoginUI;
 
 @AllArgsConstructor
 public class FillLoginForm implements Task {
@@ -25,10 +25,10 @@ public class FillLoginForm implements Task {
     @Override
     public <T extends Actor> void performAs(T actor) {
         actor.wasAbleTo(
-                Clear.field(LoginPage.INPUT_TEXT_EMAIL),
-                Clear.field(LoginPage.INPUT_TEXT_PASSWORD),
-                SendKeys.of(user.getEmail()).into(LoginPage.INPUT_TEXT_EMAIL),
-                SendKeys.of(user.getPassword()).into(LoginPage.INPUT_TEXT_PASSWORD)
+                Clear.field(LoginUI.INPUT_TEXT_EMAIL),
+                Clear.field(LoginUI.INPUT_TEXT_PASSWORD),
+                SendKeys.of(user.getEmail()).into(LoginUI.INPUT_TEXT_EMAIL),
+                SendKeys.of(user.getPassword()).into(LoginUI.INPUT_TEXT_PASSWORD)
         );
     }
 }

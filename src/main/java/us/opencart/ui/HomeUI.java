@@ -8,7 +8,7 @@ import net.thucydides.model.util.EnvironmentVariables;
 import us.opencart.exceptions.MissingConfigurationPropertyException;
 
 
-public class HomePage extends PageObject {
+public class HomeUI extends PageObject {
 
     public static final String COMPARISON_OPTION = "Compare this Product";
     public static final String WISH_LIST_OPTION = "Add to Wish List";
@@ -25,9 +25,9 @@ public class HomePage extends PageObject {
     public static final Target RIGHT_MENU_ITEM_CONTAINS_TEXT = Target.the("Right item and contains text: {0}").locatedBy("//aside[@id='column-right']//*[contains(text(),'{0}')]");
     public static final Target TOP_NAV_ITEM_CONTAINS_TEXT = Target.the("Top Nav bar item html: {0} and contains text: {1}").locatedBy("//nav[@id='top']//{0}[contains(text(),'{1}')]");
     public static final Target My_ACC_TOP_NAV_BAR = TOP_NAV_ITEM_CONTAINS_TEXT.of("span", "My Account");
-    public static final Target LOGIN_OPT_NAV_BAR = TOP_NAV_ITEM_CONTAINS_TEXT.of("a", "Login");
+    public static final Target LOGIN_OPT_NAV_BAR = TOP_NAV_ITEM_CONTAINS_TEXT.of("a", LOGIN_OPTION);
     public static final Target LOGOUT_OPT_NAV_BAR = TOP_NAV_ITEM_CONTAINS_TEXT.of("a", "Logout");
-    public static final Target REGISTER_NAV_BAR = TOP_NAV_ITEM_CONTAINS_TEXT.of("a", "Register");
+    public static final Target REGISTER_NAV_BAR = TOP_NAV_ITEM_CONTAINS_TEXT.of("a", REGISTER_OPTION);
     public static final Target WISH_LIST_NAV_BAR = TOP_NAV_ITEM_CONTAINS_TEXT.of("span", "Wish List");
     public static final Target ADD_TO_CART_NAV_BAR = TOP_NAV_ITEM_CONTAINS_TEXT.of("span", "Shopping Cart");
     public static final Target CATEGORY_ALONE_TARGET = Target.the("Target of item with Category: {0}").locatedBy("//nav[@id='menu']//*[text()='{0}']");

@@ -3,8 +3,9 @@ package us.opencart.tasks.items;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Tasks;
 import net.serenitybdd.screenplay.actions.Click;
-import us.opencart.ui.HomePage;
-import us.opencart.ui.WishListPage;
+import us.opencart.exceptions.OptionNotFoundException;
+import us.opencart.ui.HomeUI;
+import us.opencart.ui.WishListUI;
 
 public class PerformActionItemTable extends PerformActionItemBase {
     // You Can use this task in tables of AddToCartPage and WishListPagew the tables are the same,
@@ -18,13 +19,10 @@ public class PerformActionItemTable extends PerformActionItemBase {
     }
 
     public static Boolean checkOptions(String inputOption) {
-        switch (inputOption) {
-            case HomePage.REMOVE_OPTION:
-            case HomePage.ADD_TO_CART_OPTION:
-                return Boolean.TRUE;
-        }
-        return Boolean.FALSE;
+        return HomeUI.REMOVE_OPTION.equals(inputOption)
+                || HomeUI.ADD_TO_CART_OPTION.equals(inputOption);
     }
+
 
     @Override
     protected boolean isOptionValid(String inputOption) {
@@ -34,10 +32,12 @@ public class PerformActionItemTable extends PerformActionItemBase {
     @Override
     protected void performActions(Actor actor) {
         switch (itemOption) {
-            case HomePage.REMOVE_OPTION:
-            case HomePage.ADD_TO_CART_OPTION:
-                actor.wasAbleTo(Click.on(WishListPage.ITEM_ACTION_TABLE.of(itemName, itemOption)));
+            case HomeUI.REMOVE_OPTION:
+            case HomeUI.ADD_TO_CART_OPTION:
+                actor.wasAbleTo(Click.on(WishListUI.ITEM_ACTION_TABLE.of(itemName, itemOption)));
                 break;
+            default:
+                throw new OptionNotFoundException(itemOption);
         }
     }
 

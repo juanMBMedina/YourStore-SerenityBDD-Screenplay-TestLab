@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'io.freefair.lombok' version '8.4'
     id 'net.serenity-bdd.serenity-gradle-plugin' version '4.2.22'
+    id 'jacoco'
 }
 
 group = 'us.opencart'
@@ -24,31 +25,38 @@ ext {
 }
 
 dependencies {
-    // Serenity BDD
     implementation  "net.serenity-bdd:serenity-core:${serenityVersion}"
     implementation  "net.serenity-bdd:serenity-junit:${serenityVersion}"
     implementation  "net.serenity-bdd:serenity-cucumber:${serenityVersion}"
     implementation  "net.serenity-bdd:serenity-screenplay:${serenityVersion}"
     implementation  "net.serenity-bdd:serenity-screenplay-webdriver:${serenityVersion}"
-    // Cucumber
     implementation  "io.cucumber:cucumber-java:${cucumberVersion}"
     implementation  "io.cucumber:cucumber-junit:${cucumberVersion}"
-    // Selenium WebDriver
     implementation  "org.seleniumhq.selenium:selenium-java:${seleniumVersion}"
-    // Logging
     implementation  "org.slf4j:slf4j-simple:${slf4jVersion}"
-    // JUnit Vintage
     implementation  "org.junit.vintage:junit-vintage-engine:${junitVintageEngineVersion}"
-    // Lombok
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
-    // JavaFaker
     implementation "com.github.javafaker:javafaker:${javaFakerVersion}"
 }
 
 test {
     useJUnit()
     systemProperties System.getProperties()
+    finalizedBy jacocoTestReport
+}
+
+jacoco {
+    toolVersion = "0.8.10"
+}
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required.set(true)
+        csv.required.set(false)
+        html.outputLocation.set(layout.buildDirectory.dir('reports/jacocoHtml'))
+    }
 }
 
 tasks.withType(JavaCompile).configureEach {

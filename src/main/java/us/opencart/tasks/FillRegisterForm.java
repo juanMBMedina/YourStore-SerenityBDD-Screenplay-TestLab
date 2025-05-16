@@ -7,7 +7,7 @@ import net.serenitybdd.screenplay.Tasks;
 import net.serenitybdd.screenplay.actions.*;
 import net.serenitybdd.screenplay.targets.Target;
 import us.opencart.models.RegisterUser;
-import us.opencart.ui.RegisterPage;
+import us.opencart.ui.RegisterUI;
 
 @AllArgsConstructor
 public class FillRegisterForm implements Task {
@@ -27,21 +27,21 @@ public class FillRegisterForm implements Task {
 
     @Override
     public <T extends Actor> void performAs(T actor) {
-        writeInput(actor, RegisterPage.INPUT_TEXT_FIRST_NAME, user.getFirstName());
-        writeInput(actor, RegisterPage.INPUT_TEXT_LAST_NAME, user.getLastName());
-        writeInput(actor, RegisterPage.INPUT_TEXT_EMAIL, user.getEmail());
-        writeInput(actor, RegisterPage.INPUT_TEXT_TELEPHONE, user.getTelephone());
-        writeInput(actor, RegisterPage.INPUT_TEXT_PASSWORD, user.getPassword());
-        writeInput(actor, RegisterPage.INPUT_TEXT_PASSWORD_CONFIRM, user.getPasswordConfirm());
+        writeInput(actor, RegisterUI.INPUT_TEXT_FIRST_NAME, user.getFirstName());
+        writeInput(actor, RegisterUI.INPUT_TEXT_LAST_NAME, user.getLastName());
+        writeInput(actor, RegisterUI.INPUT_TEXT_EMAIL, user.getEmail());
+        writeInput(actor, RegisterUI.INPUT_TEXT_TELEPHONE, user.getTelephone());
+        writeInput(actor, RegisterUI.INPUT_TEXT_PASSWORD, user.getPassword());
+        writeInput(actor, RegisterUI.INPUT_TEXT_PASSWORD_CONFIRM, user.getPasswordConfirm());
 
         actor.wasAbleTo(
-                Click.on(RegisterPage.getSubscribeTarget.apply(user.getSubscribe()))
+                Click.on(RegisterUI.getSubscribeTarget.apply(user.getSubscribe()))
         );
 
         if (user.getPrivacy()) {
-            actor.wasAbleTo(CheckCheckbox.of(RegisterPage.CHECK_BOX_PRIVACY));
+            actor.wasAbleTo(CheckCheckbox.of(RegisterUI.CHECK_BOX_PRIVACY));
         } else {
-            actor.wasAbleTo(UncheckCheckbox.of(RegisterPage.CHECK_BOX_PRIVACY));
+            actor.wasAbleTo(UncheckCheckbox.of(RegisterUI.CHECK_BOX_PRIVACY));
         }
     }
 }

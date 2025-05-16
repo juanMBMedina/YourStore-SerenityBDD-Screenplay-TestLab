@@ -2,8 +2,8 @@ pipeline {
     agent any
     
     parameters {
-        string(name: 'PROJECT_NAME', defaultValue: 'YourStore-Selenium-POM-TestLab', description: 'Project Base Directory Repo')
-        string(name: 'REPO_URL', defaultValue: 'git@github.com:juanMBMedina/YourStore-Selenium-POM-TestLab.git', description: 'SSH URL of the repository')
+        string(name: 'PROJECT_NAME', defaultValue: 'YourStore-SerenityBDD-Screenplay-TestLab', description: 'Project Base Directory Repo')
+        string(name: 'REPO_URL', defaultValue: 'git@github.com:juanMBMedina/YourStore-SerenityBDD-Screenplay-TestLab.git', description: 'SSH URL of the repository')
         string(name: 'DEFAULT_BRANCH', defaultValue: 'develop', description: 'Branch of the repository')
     }
     

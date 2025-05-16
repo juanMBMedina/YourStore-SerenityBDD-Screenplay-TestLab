@@ -6,7 +6,7 @@ import org.openqa.selenium.By;
 import java.util.Map;
 import java.util.function.Function;
 
-public class RegisterPage extends HomePage {
+public class RegisterUI extends HomeUI {
 
     public static final String SUCCESS_REGISTER_MESSAGE = "Congratulations! Your new account has been successfully created!";
     public static final String USER_EXIST_MESSAGE = "Warning: E-Mail Address is already registered!";
@@ -31,8 +31,8 @@ public class RegisterPage extends HomePage {
     public static final Target CHECK_BOX_PRIVACY = Target.the("Privacy Check Box of Register form with value: {0}").locatedBy("//input[@type='checkbox']");
     public static final Target SUBMIT_BUTTON = Target.the("Submit button in Register form").locatedBy("//input[@type='submit']");
 
-    public static Function<Boolean, String> getText = status -> status ? "Yes" : "No";
-    public static Function<Boolean, Target> getSubscribeTarget = status -> RADIO_BUTTON_SUBSCRIBE.of(getText.apply(status));
+    public static final Function<Boolean, String> getText = status -> status ? "Yes" : "No";
+    public static final Function<Boolean, Target> getSubscribeTarget = status -> RADIO_BUTTON_SUBSCRIBE.of(getText.apply(status));
 
 
 }

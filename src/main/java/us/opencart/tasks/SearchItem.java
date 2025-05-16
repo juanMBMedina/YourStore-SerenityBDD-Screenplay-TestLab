@@ -5,7 +5,7 @@ import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Task;
 import net.serenitybdd.screenplay.actions.Click;
 import us.opencart.models.SearchItemNavBar;
-import us.opencart.ui.HomePage;
+import us.opencart.ui.HomeUI;
 import us.opencart.utils.UiAssertions;
 
 import static net.serenitybdd.screenplay.Tasks.instrumented;
@@ -21,10 +21,10 @@ public class SearchItem implements Task {
 
     @Override
     public <T extends Actor> void performAs(T actor) {
-        actor.wasAbleTo(Click.on(HomePage.CATEGORY_ALONE_TARGET.of(item.getCategory())));
+        actor.wasAbleTo(Click.on(HomeUI.CATEGORY_ALONE_TARGET.of(item.getCategory())));
         if (!item.getSubcategory().equals(SearchItemNavBar.DEFAULT_VALUE)) {
-            actor.wasAbleTo(Click.on(HomePage.CATEGORY_SUBCATEGORY_TARGET.of(item.getCategory(), item.getSubcategory())));
+            actor.wasAbleTo(Click.on(HomeUI.CATEGORY_SUBCATEGORY_TARGET.of(item.getCategory(), item.getSubcategory())));
         }
-        UiAssertions.shouldSeeElementOnPage(actor, HomePage.ITEM_BOX_TARGET.of(item.getItemName()));
+        UiAssertions.shouldSeeElementOnPage(actor, HomeUI.ITEM_BOX_TARGET.of(item.getItemName()));
     }
 }

@@ -3,7 +3,6 @@ package us.opencart.models;
 import lombok.*;
 
 @Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder

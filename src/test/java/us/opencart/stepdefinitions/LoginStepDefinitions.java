@@ -8,26 +8,26 @@ import net.serenitybdd.screenplay.actions.Click;
 import net.serenitybdd.screenplay.actions.Open;
 import net.serenitybdd.screenplay.questions.Text;
 import us.opencart.exceptions.TestDataLoadException;
-import us.opencart.questions.ShouldThrowException;
+import us.opencart.questions.ShouldThrow;
 import us.opencart.tasks.FillLoginForm;
 import us.opencart.tasks.NavigateTo;
 import us.opencart.tasks.LogOutUser;
-import us.opencart.ui.HomePage;
-import us.opencart.ui.LoginPage;
+import us.opencart.ui.HomeUI;
+import us.opencart.ui.LoginUI;
 import us.opencart.utils.TestDataLoader;
 import us.opencart.utils.UiAssertions;
 
 import static net.serenitybdd.screenplay.GivenWhenThen.seeThat;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorInTheSpotlight;
 import static org.hamcrest.Matchers.containsInAnyOrder;
-import static us.opencart.ui.HomePage.ITEM_CONTAINS_TEXT;
+import static us.opencart.ui.HomeUI.ITEM_CONTAINS_TEXT;
 
 public class LoginStepDefinitions {
 
     @Given("the user is on the login page of Your Store")
     public void theUserIsOnTheLoginPageOfYourStore() {
         theActorInTheSpotlight().wasAbleTo(
-                Open.url(HomePage.getBaseUrl()),
+                Open.url(HomeUI.getBaseUrl()),
                 NavigateTo.login()
         );
     }
@@ -41,14 +41,14 @@ public class LoginStepDefinitions {
 
     @When("the user submits the login form")
     public void theUserSubmitsTheLoginForm() {
-        theActorInTheSpotlight().wasAbleTo(Click.on(LoginPage.SUBMIT_BUTTON));
+        theActorInTheSpotlight().wasAbleTo(Click.on(LoginUI.SUBMIT_BUTTON));
     }
 
     @Then("the user should see a successful login message")
     public void theUserShouldSeeASuccessfulLoginMessage() {
         theActorInTheSpotlight().should(
-                seeThat(Text.ofEach(LoginPage.LOGIN_SUCCESS_TITLES),
-                        containsInAnyOrder(LoginPage.EXPECTED_HEADERS.toArray()
+                seeThat(Text.ofEach(LoginUI.LOGIN_SUCCESS_TITLES),
+                        containsInAnyOrder(LoginUI.EXPECTED_HEADERS.toArray()
                         )
                 )
         );
@@ -66,7 +66,7 @@ public class LoginStepDefinitions {
 
     @Then("the user should see a successful logout message")
     public void theUserShouldSeeASuccessfulLogoutMessage() {
-        UiAssertions.shouldSeeTextOnPage(theActorInTheSpotlight(), LoginPage.LOGOUT_MESSAGE);
+        UiAssertions.shouldSeeTextOnPage(theActorInTheSpotlight(), LoginUI.LOGOUT_MESSAGE);
     }
 
     @Given("the user enters credentials with username {string} and password {string}")
@@ -76,7 +76,7 @@ public class LoginStepDefinitions {
 
     @Then("the user should see a unsuccessful login message")
     public void theUserShouldSeeAUnsuccessfulLoginMessage() {
-        UiAssertions.shouldSeeTextOnPage(theActorInTheSpotlight(), LoginPage.LOGIN_WRONG_MESSAGE);
+        UiAssertions.shouldSeeTextOnPage(theActorInTheSpotlight(), LoginUI.LOGIN_WRONG_MESSAGE);
     }
 
     @When("the user sends credentials with username {string} and password {string} for {int} attempts")
@@ -87,21 +87,21 @@ public class LoginStepDefinitions {
             theUserEntersCredentialsWithUsernameAndPassword(email, password);
             theUserSubmitsTheLoginForm();
             attemp++;
-        } while (attemp < count && ITEM_CONTAINS_TEXT.of(LoginPage.LOGIN_WRONG_MESSAGE).resolveFor(tempActor).isVisible());
+        } while (attemp < count && ITEM_CONTAINS_TEXT.of(LoginUI.LOGIN_WRONG_MESSAGE).resolveFor(tempActor).isVisible());
     }
 
     @Then("the user should see an error message indicating that the maximum number of login attempts has been reached")
     public void theUserShouldSeeAnErrorMessageIndicatingThatTheMaximumNumberOfLoginAttemptsHasBeenReached() {
-        UiAssertions.shouldSeeTextOnPage(theActorInTheSpotlight(), LoginPage.MAX_LOGIN_MESSAGE);
+        UiAssertions.shouldSeeTextOnPage(theActorInTheSpotlight(), LoginUI.MAX_LOGIN_MESSAGE);
     }
 
     @Then("the user should see an error exception in the Data Loader")
     public void theUserShouldSeeAnErrorExceptionInTheDataLoader() {
         theActorInTheSpotlight().should(
-                seeThat(ShouldThrowException.whenExecuting(TestDataLoader::loadWrongLabelUserLogin, TestDataLoadException.class))
+                seeThat(ShouldThrow.whenExecuting(TestDataLoader::loadWrongLabelUserLogin, TestDataLoadException.class))
         );
         theActorInTheSpotlight().should(
-                seeThat(ShouldThrowException.whenExecuting(TestDataLoader::loadKeyDoesNotExistUserLogin, IllegalArgumentException.class))
+                seeThat(ShouldThrow.whenExecuting(TestDataLoader::loadKeyDoesNotExistUserLogin, IllegalArgumentException.class))
         );
 
     }

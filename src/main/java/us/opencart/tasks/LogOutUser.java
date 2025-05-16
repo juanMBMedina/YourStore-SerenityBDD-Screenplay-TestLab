@@ -6,9 +6,11 @@ import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Task;
 import net.serenitybdd.screenplay.actions.Click;
 import us.opencart.exceptions.OptionNotFoundException;
-import us.opencart.ui.LoginPage;
 
 import static net.serenitybdd.screenplay.Tasks.instrumented;
+import static us.opencart.ui.HomeUI.LOGOUT_OPT_NAV_BAR;
+import static us.opencart.ui.HomeUI.My_ACC_TOP_NAV_BAR;
+import static us.opencart.ui.LoginUI.LOGOUT_OPT_RIGHT_MENU;
 
 
 @Getter
@@ -35,15 +37,15 @@ public class LogOutUser implements Task {
     public <T extends Actor> void performAs(T actor) {
         if (getOption().equals(TOP_NAV_BAR_OPT)) {
             actor.wasAbleTo(
-                    Click.on(LoginPage.My_ACC_TOP_NAV_BAR),
-                    Click.on(LoginPage.LOGOUT_OPT_NAV_BAR)
+                    Click.on(My_ACC_TOP_NAV_BAR),
+                    Click.on(LOGOUT_OPT_NAV_BAR)
             );
         } else if (getOption().equals(RIGHT_MENU_OPT)) {
             actor.wasAbleTo(
-                    Click.on(LoginPage.My_ACC_TOP_NAV_BAR),
-                    Click.on(LoginPage.LOGOUT_OPT_RIGHT_MENU)
+                    Click.on(My_ACC_TOP_NAV_BAR),
+                    Click.on(LOGOUT_OPT_RIGHT_MENU)
             );
-        }else{
+        } else {
             throw new OptionNotFoundException(option);
         }
     }

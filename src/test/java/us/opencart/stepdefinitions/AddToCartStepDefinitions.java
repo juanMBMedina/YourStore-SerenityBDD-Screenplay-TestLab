@@ -10,10 +10,11 @@ import us.opencart.tasks.NavigateTo;
 import us.opencart.tasks.SearchItem;
 import us.opencart.tasks.items.PerformActionItemBody;
 import us.opencart.tasks.items.PerformActionItemTable;
-import us.opencart.ui.AddToCartPage;
-import us.opencart.ui.HomePage;
-import us.opencart.ui.WishListPage;
+import us.opencart.ui.AddToCartUI;
+import us.opencart.ui.HomeUI;
+import us.opencart.ui.WishListUI;
 import us.opencart.utils.UiAssertions;
+
 
 import static net.serenitybdd.screenplay.GivenWhenThen.seeThat;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorInTheSpotlight;
@@ -40,18 +41,18 @@ public class AddToCartStepDefinitions {
     @Then("the user should see a successful comparison item message")
     public void theUserShouldSeeASuccessfulComparisonItemMessage() {
         String itemName = theActorInTheSpotlight().recall(ITEM_NAME_LABEL);
-        String expectedText = String.format(HomePage.COMPARISON_SUCCESS_MESSAGE, itemName);
+        String expectedText = String.format(HomeUI.COMPARISON_SUCCESS_MESSAGE, itemName);
         theActorInTheSpotlight().should(
-                seeThat(Text.of(HomePage.ALERT_MESSAGE_TARGET), containsString(expectedText))
+                seeThat(Text.of(HomeUI.ALERT_MESSAGE_TARGET), containsString(expectedText))
         );
     }
 
     @Then("the user should see a successful item added to the Wish List message")
     public void theUserShouldSeeASuccessfulItemAddedToTheWishListMessage() {
         String itemName = theActorInTheSpotlight().recall(ITEM_NAME_LABEL);
-        String expectedText = String.format(HomePage.WISH_LIST_SUCCESS_MESSAGE, itemName);
+        String expectedText = String.format(HomeUI.WISH_LIST_SUCCESS_MESSAGE, itemName);
         theActorInTheSpotlight().should(
-                seeThat(Text.of(HomePage.ALERT_MESSAGE_TARGET), containsString(expectedText))
+                seeThat(Text.of(HomeUI.ALERT_MESSAGE_TARGET), containsString(expectedText))
         );
     }
 
@@ -64,7 +65,7 @@ public class AddToCartStepDefinitions {
     public void theUserShouldSeeTheSelectedItemInTheWishList() {
         String itemName = theActorInTheSpotlight().recall(ITEM_NAME_LABEL);
         theActorInTheSpotlight().should(
-                seeThat(Text.of(WishListPage.ITEM_NAME_TABLE.of(itemName)), containsString(itemName))
+                seeThat(Text.of(WishListUI.ITEM_NAME_TABLE.of(itemName)), containsString(itemName))
         );
     }
 
@@ -78,17 +79,17 @@ public class AddToCartStepDefinitions {
     public void theUserShouldSeeAMessageConfirmingTheSuccessfulRemovalFromTheWishList() {
         String itemName = theActorInTheSpotlight().recall(ITEM_NAME_LABEL);
         theActorInTheSpotlight().should(
-                seeThat(the(WishListPage.ITEM_NAME_TABLE.of(itemName)), not(isVisible()))
+                seeThat(the(WishListUI.ITEM_NAME_TABLE.of(itemName)), not(isVisible()))
         );
-        UiAssertions.shouldSeeTextOnPage(theActorInTheSpotlight(), WishListPage.WISH_LIST_SUCCESS_MODIFY_MESSAGE);
+        UiAssertions.shouldSeeTextOnPage(theActorInTheSpotlight(), WishListUI.WISH_LIST_SUCCESS_MODIFY_MESSAGE);
     }
 
     @Then("the user should see a successful Add to Cart item message")
     public void theUserShouldSeeASuccessfulAddToCartItemMessage() {
         String itemName = theActorInTheSpotlight().recall(ITEM_NAME_LABEL);
-        String expectedText = String.format(HomePage.ADD_TO_CART_SUCCESS_MESSAGE_FORMAT, itemName);
+        String expectedText = String.format(HomeUI.ADD_TO_CART_SUCCESS_MESSAGE_FORMAT, itemName);
         theActorInTheSpotlight().should(
-                seeThat(Text.of(HomePage.ALERT_MESSAGE_TARGET), containsString(expectedText))
+                seeThat(Text.of(HomeUI.ALERT_MESSAGE_TARGET), containsString(expectedText))
         );
     }
 
@@ -101,7 +102,7 @@ public class AddToCartStepDefinitions {
     public void theUserShouldSeeTheSelectedItemInTheAddToCart() {
         String itemName = theActorInTheSpotlight().recall(ITEM_NAME_LABEL);
         theActorInTheSpotlight().should(
-                seeThat(the(AddToCartPage.ITEM_NAME_TABLE.of(itemName)), isVisible())
+                seeThat(the(AddToCartUI.ITEM_NAME_TABLE.of(itemName)), isVisible())
         );
     }
 
@@ -115,7 +116,7 @@ public class AddToCartStepDefinitions {
     public void theUserShouldSeeAMessageConfirmingTheSuccessfulRemovalFromTheAddToCart() {
         String itemName = theActorInTheSpotlight().recall(ITEM_NAME_LABEL);
         theActorInTheSpotlight().should(
-                seeThat(the(AddToCartPage.ITEM_NAME_TABLE.of(itemName)), not(isVisible()))
+                seeThat(the(AddToCartUI.ITEM_NAME_TABLE.of(itemName)), not(isVisible()))
         );
     }
 

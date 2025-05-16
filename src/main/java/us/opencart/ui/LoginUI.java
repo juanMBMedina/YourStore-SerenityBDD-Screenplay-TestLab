@@ -5,7 +5,10 @@ import org.openqa.selenium.By;
 
 import java.util.List;
 
-public class LoginPage extends HomePage {
+public class LoginUI extends HomeUI {
+
+    private LoginUI() {
+    }
 
     public static final String LOGOUT_MESSAGE = "You have been logged off your account. It is now safe to leave the computer.";
     public static final String LOGIN_WRONG_MESSAGE = " Warning: No match for E-Mail Address and/or Password.";
