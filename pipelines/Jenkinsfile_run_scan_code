@@ -13,6 +13,22 @@ pipeline {
 
     stages {
 
+        stage('Build Project') {
+            steps {
+                script {
+                    def repoDir = "${BASE_DIR}/${PROJECT_NAME}"
+                    build(
+                        job: 'Run-Test-Suites-YourStore-SerenityBDD-Screenplay-TestLab',
+                        parameters: [
+                            string(name: 'SUITE', value: 'AllTests'),
+                            string(name: 'BROWSER', value: 'Chrome'),
+                            string(name: 'PROJECT_NAME', value: PROJECT_NAME)
+                        ]
+                    )
+                }
+            }
+        }
+
         stage('Running Sonarqube checking') {
             steps {
                 script {
