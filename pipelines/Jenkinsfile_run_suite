@@ -15,7 +15,7 @@ pipeline {
     parameters {
         choice(
             name: 'SUITE',
-            choices: ['AddToCartRunner', 'LoginRunner', 'RegisterRunner'],
+            choices: ['AddToCartRunner', 'LoginRunner', 'RegisterRunner', 'AllTests'],
             description: 'Select the test suite to run'
         )
         choice(
@@ -25,12 +25,12 @@ pipeline {
         )
         string(
             name: 'PROJECT_NAME',
-            defaultValue: 'YourStore-Serenity-Screenplay-TestLab',
+            defaultValue: 'YourStore-SerenityBDD-Screenplay-TestLab',
             description: 'Project base directory name'
         )
         string(
             name: 'REPO_URL',
-            defaultValue: 'git@github.com:juanMBMedina/YourStore-Serenity-Screenplay-TestLab.git',
+            defaultValue: 'git@github.com:juanMBMedina/YourStore-SerenityBDD-Screenplay-TestLab.git',
             description: 'SSH repository URL'
         )
         string(
@@ -41,6 +41,68 @@ pipeline {
     }
 
     stages {
+
+        stage('Start Selenium Grid') {
+            steps {
+                dir("${BASE_DIR}/${PROJECT_NAME}") {
+                    script {
+                        def nodeService = ""
+                        switch(params.BROWSER) {
+                            case "Chrome":
+                                nodeService = "chrome-node"
+                                break
+                            case "Edge":
+                                nodeService = "edge-node"
+                                break
+                            case "Firefox":
+                                nodeService = "firefox-node"
+                                break
+                            default:
+                                error "Unsupported browser environment: ${params.BROWSER}"
+                        }
+
+                        echo "Starting selenium-hub and ${nodeService} containers using docker-compose.selenium.yml"
+
+                        sh """
+                            docker-compose -f docker-compose.selenium.yml up -d selenium-hub ${nodeService}
+                        """
+
+                        echo "Waiting 10 seconds for containers to start..."
+                        sleep 10
+
+                        int maxRetries = 5
+                        int retryCount = 0
+                        int responseCode = 0
+
+                        while (retryCount < maxRetries) {
+                            try {
+                                def responseString = sh(
+                                    script: "curl -s -o /dev/null -w '%{http_code}' http://selenium-hub:4444/status",
+                                    returnStdout: true
+                                ).trim()
+
+                                responseCode = responseString.isInteger() ? responseString.toInteger() : 0
+                            } catch (Exception e) {
+                                responseCode = 0
+                            }
+
+                            if (responseCode == 200) {
+                                echo "Selenium-hub is up and running!"
+                                break
+                            } else {
+                                echo "Selenium-hub not ready yet (HTTP ${responseCode}). Waiting 5 seconds..."
+                                sleep 5
+                                retryCount++
+                            }
+                        }
+
+                        if (responseCode != 200) {
+                            error "Selenium-hub did not become ready after ${maxRetries} attempts."
+                        }
+                    }
+                }
+            }
+        }
 
         stage('Clone Repository') {
             steps {
@@ -55,64 +117,18 @@ pipeline {
             }
         }
 
-        stage('Start Selenium Grid') {
-            steps {
-                script {
-                    def nodeService = ""
-                    switch(params.BROWSER) {
-                        case "Chrome":
-                            nodeService = "chrome-node"
-                            break
-                        case "Edge":
-                            nodeService = "edge-node"
-                            break
-                        case "Firefox":
-                            nodeService = "firefox-node"
-                            break
-                        default:
-                            error "Unsupported browser environment: ${params.BROWSER}"
-                    }
-                    echo "Starting selenium-hub and ${nodeService} containers using docker-compose.selenium.yml"
-                    sh """
-                        docker-compose -f docker-compose.selenium.yml up -d selenium-hub ${nodeService}
-                    """
-
-                    int maxRetries = 3
-                    int retryCount = 0
-                    int responseCode = 0
-
-                    while (retryCount < maxRetries) {
-                        responseCode = sh(
-                            script: "curl -s -o /dev/null -w '%{http_code}' http://localhost:4444/status",
-                            returnStdout: true
-                        ).trim() as Integer
-
-                        if (responseCode == 200) {
-                            echo "Selenium-hub is up and running!"
-                            break
-                        } else {
-                            echo "Selenium-hub not ready yet (HTTP ${responseCode}). Waiting 5 seconds..."
-                            sleep 5
-                            retryCount++
-                        }
-                    }
-
-                    if (responseCode != 200) {
-                        error "Selenium-hub did not become ready after ${maxRetries} attempts."
-                    }
-                }
-            }
-        }
-
         stage('Run Serenity Tests with Gradle') {
             steps {
                 dir("${BASE_DIR}/${PROJECT_NAME}") {
                     script {
                         echo "Running Serenity tests for suite: ${params.SUITE} with environment: ${params.BROWSER}"
+
+                        def testPattern = (params.SUITE == 'AllTests') ? "us.opencart.runners.*Runner" : "us.opencart.runners.${params.SUITE}"
+
                         sh """
-                            chmod +x ./functions.sh
                             gradle clean
-                            ./run-test.sh remote${params.SUITE} ${params.BROWSER}
+                            gradle test --tests "${testPattern}" -Denvironment="remote${params.BROWSER}"
+                            gradle aggregate
                         """
                     }
                 }
@@ -121,28 +137,12 @@ pipeline {
 
         stage('Stop Selenium Grid') {
             steps {
-                script {
-                    echo "Stopping selenium grid containers using docker-compose.selenium.yml"
-                    sh """
-                        docker-compose -f docker-compose.selenium.yml down
-                    """
-                }
-            }
-        }
-
-        stage('Store Serenity Reports') {
-            steps {
                 dir("${BASE_DIR}/${PROJECT_NAME}") {
                     script {
-                        def reportFolder = 'target/site/serenity'
-                        def now = sh(script: "date +\"%Y-%m-%d_%H-%M-%S\"", returnStdout: true).trim()
-                        def dest = "${REPORTS_DIR}/${params.PROJECT_NAME}/execution_${now}"
-                        echo "Copying Serenity reports from ${reportFolder} to ${dest}"
+                        echo "Stopping selenium grid containers using docker-compose.selenium.yml"
                         sh """
-                            mkdir -p ${dest}
-                            cp -r ${reportFolder}/* ${dest}
+                            docker-compose -f docker-compose.selenium.yml down
                         """
-                        env.SERENITY_REPORT_PATH = dest
                     }
                 }
             }
@@ -150,15 +150,18 @@ pipeline {
 
         stage('Publish Serenity Report') {
             steps {
-                script {
-                    publishHTML(target: [
+                dir("${BASE_DIR}/${PROJECT_NAME}") {
+                    script {
+                        env.SERENITY_REPORT_PATH = "${BASE_DIR}/${PROJECT_NAME}/target/site/serenity"
+                        publishHTML(target: [
                         allowMissing: false,
                         alwaysLinkToLastBuild: true,
                         keepAll: true,
                         reportDir: env.SERENITY_REPORT_PATH,
                         reportFiles: 'index.html',
-                        reportName: reportName: "${params.PROJECT_NAME} Serenity Report"
+                        reportName: "${params.PROJECT_NAME} Serenity Report"
                     ])
+                    }
                 }
             }
         }
