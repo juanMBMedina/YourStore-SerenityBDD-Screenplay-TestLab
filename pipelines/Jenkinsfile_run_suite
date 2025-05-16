@@ -111,7 +111,7 @@ pipeline {
                         echo "Running Serenity tests for suite: ${params.SUITE} with environment: ${params.BROWSER}"
                         sh """
                             chmod +x ./functions.sh
-                            ./gradlew clean
+                            gradle clean
                             ./run-test.sh remote${params.SUITE} ${params.BROWSER}
                         """
                     }

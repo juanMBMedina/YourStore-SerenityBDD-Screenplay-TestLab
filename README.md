@@ -74,15 +74,15 @@ mvn clean test
 
 To run tests with a specific browser (e.g., Edge) and remote mode, remote mode have the parameter headless by default:
 ```bash
-./gradlew clean test --tests "us.opencart.runners.LoginRunner" -Denvironment=localChrome && ./gradlew aggregate
-./gradlew clean test --tests "us.opencart.runners.LoginRunner" -Denvironment=remoteChrome && ./gradlew aggregate
+gradle clean test --tests "us.opencart.runners.LoginRunner" -Denvironment=localChrome && gradle aggregate
+gradle clean test --tests "us.opencart.runners.LoginRunner" -Denvironment=remoteChrome && gradle aggregate
 ```
 
 Or set the environment variable before running:
 ```bash
 export ENVIRONMENT=remoteChrome
 export SUITE=LoginRunner
-./gradlew clean test --tests "us.opencart.runners.SUITE" -Denvironment=remoteChrome && ./gradlew aggregate
+gradle clean test --tests "us.opencart.runners.SUITE" -Denvironment=remoteChrome && gradle aggregate
 ```
 Run sonar-scanner in Local Environment:
 ```bash

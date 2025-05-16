@@ -2,17 +2,17 @@
 
 # Load the run_test function
 source ./functions.sh
-chmod +x ./gradlew
+chmod +x gradle
 
 # Clean previous test results
 echo "Cleaning previous test results..."
-./gradlew clean
+gradle clean
 
 # Execute test runners
 run_all_tests "remoteChrome"
 
 # Generate Serenity report
 echo "Generating Serenity report..."
-./gradlew aggregate
+gradle aggregate
 
 echo "Process completed. Check the report at target/site/serenity/index.html"

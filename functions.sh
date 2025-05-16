@@ -19,7 +19,7 @@ run_test() {
   esac
 
   echo "Running $runner with environment $env..."
-  ./gradlew test --tests "us.opencart.runners.$runner" -Denvironment="$env"
+  gradle test --tests "us.opencart.runners.$runner" -Denvironment="$env"
 }
 
 run_all_tests() {
@@ -35,5 +35,5 @@ run_all_tests() {
   esac
 
   echo "Running $runner with environment $env..."
-  ./gradlew test --tests "us.opencart.runners.*Runner" -Denvironment="$env"
+  gradle test --tests "us.opencart.runners.*Runner" -Denvironment="$env"
 }
