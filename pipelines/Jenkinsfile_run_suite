@@ -119,7 +119,6 @@ pipeline {
             }
         }
 
-
         stage('Stop Selenium Grid') {
             steps {
                 script {
