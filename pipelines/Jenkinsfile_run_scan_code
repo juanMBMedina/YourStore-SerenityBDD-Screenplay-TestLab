@@ -1,15 +1,9 @@
-def extractPropertyValue(file, property) {
-    return sh(script: """
-        grep "^${property}=" ${file} | sed "s/^${property}=//"
-    """, returnStdout: true).trim()
+def extractPropertyValue(String file, String property) {
+    return sh(script: "grep \"^${property}=\" ${file} | sed \"s/^${property}=//\"", returnStdout: true).trim()
 }
 
 pipeline {
     agent any
-
-    env{
-        PROJECT_NAME = extractPropertyValue('sonar-scanner.properties', 'sonar.projectName'),
-    }
 
     parameters {
         string(name: 'REPO_URL', defaultValue: 'git@github.com:juanMBMedina/YourStore-SerenityBDD-Screenplay-TestLab.git', description: 'SSH URL of the repository')
@@ -21,31 +15,39 @@ pipeline {
     }
 
     stages {
-
-        stage('Build Project') {
+        stage('Prepare Environment') {
             steps {
                 script {
-                    def repoDir = "${BASE_DIR}/${PROJECT_NAME}"
+                    env.PROJECT_NAME = extractPropertyValue('sonar-scanner.properties', 'sonar.projectName')
+                    env.REPO_DIR = "${env.BASE_DIR}/${env.PROJECT_NAME}"
+                    echo "Project: ${env.PROJECT_NAME}"
+                    echo "Repo Directory: ${env.REPO_DIR}"
+                }
+            }
+        }
+
+        stage('Build Project All Project') {
+            steps {
+                script {
                     build(
-                        job: 'Run-Test-Suite-${PROJECT_NAME}',
+                        job: "Run-Test-Suite-${env.PROJECT_NAME}",
                         parameters: [
                             string(name: 'SUITE', value: 'AllTests'),
                             string(name: 'BROWSER', value: 'Chrome'),
-                            string(name: 'PROJECT_NAME', value: PROJECT_NAME)
+                            string(name: 'PROJECT_NAME', value: env.PROJECT_NAME)
                         ]
                     )
                 }
             }
         }
 
-        stage('Running Sonarqube checking') {
+        stage('Run SonarQube Analysis') {
             steps {
                 script {
-                    def repoDir = "${BASE_DIR}/${PROJECT_NAME}"
                     build(
                         job: 'scan-code',
                         parameters: [
-                            string(name: 'REPO_DIR', value: repoDir),
+                            string(name: 'REPO_DIR', value: env.REPO_DIR)
                         ]
                     )
                 }

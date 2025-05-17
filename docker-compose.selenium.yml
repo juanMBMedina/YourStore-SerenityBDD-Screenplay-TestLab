@@ -20,7 +20,7 @@ services:
       - project-network
 
   firefox-node:
-    image: selenium/node-firefox:latest
+    image: selenium/node-firefox:137.0.2-20250505
     shm_size: 2gb
     depends_on:
       - selenium-hub
