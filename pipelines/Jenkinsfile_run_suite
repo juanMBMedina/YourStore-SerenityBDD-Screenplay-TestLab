@@ -1,106 +1,83 @@
-def extractPropertyValue(file, property) {
-    return sh(script: """
-        grep "^${property}=" ${file} | sed "s/^${property}=//"
-    """, returnStdout: true).trim()
+def extractPropertyValue(String file, String property) {
+    return sh(script: "grep \"^${property}=\" ${file} | sed \"s/^${property}=//\"", returnStdout: true).trim()
+}
+
+def waitForSeleniumHub() {
+    int retries = 5
+    int responseCode = 0
+
+    for (int i = 0; i < retries; i++) {
+        try {
+            def response = sh(script: "curl -s -o /dev/null -w '%{http_code}' http://selenium-hub:4444/status", returnStdout: true).trim()
+            responseCode = response.isInteger() ? response.toInteger() : 0
+        } catch (ignored) {
+            responseCode = 0
+        }
+
+        if (responseCode == 200) {
+            echo "Selenium-hub is up and running!"
+            return
+        }
+
+        echo "Selenium-hub not ready (HTTP ${responseCode}). Retrying in 5s..."
+        sleep 5
+    }
+
+    error "Selenium-hub did not become ready after ${retries} attempts."
 }
 
 pipeline {
     agent any
 
     environment {
-        BASE_DIR = '/var/jenkins_home/repos',
-        PROJECT_NAME = extractPropertyValue('sonar-scanner.properties', 'sonar.projectName')
+        BASE_DIR = '/var/jenkins_home/repos'
     }
 
     parameters {
-        choice(
-            name: 'SUITE',
-            choices: ['AddToCartRunner', 'LoginRunner', 'RegisterRunner', 'AllTests'],
-            description: 'Select the test suite to run'
-        )
-        choice(
-            name: 'BROWSER',
-            choices: ['Chrome', 'Edge', 'Firefox'],
-            description: 'Select the browser environment for test execution'
-        )
+        choice(name: 'SUITE', choices: ['AddToCartRunner', 'LoginRunner', 'RegisterRunner', 'AllTests'], description: 'Select the test suite to run')
+        choice(name: 'BROWSER', choices: ['Chrome', 'Edge', 'Firefox'], description: 'Select the browser environment for test execution')
     }
 
     stages {
 
+        stage('Initialize') {
+            steps {
+                script {
+                    env.PROJECT_NAME = extractPropertyValue('sonar-scanner.properties', 'sonar.projectName')
+                    env.PROJECT_PATH = "${env.BASE_DIR}/${env.PROJECT_NAME}"
+                }
+            }
+        }
+
         stage('Start Selenium Grid') {
             steps {
-                dir("${BASE_DIR}/${PROJECT_NAME}") {
+                dir("${env.PROJECT_PATH}") {
                     script {
-                        def nodeService = ""
-                        switch(params.BROWSER) {
-                            case "Chrome":
-                                nodeService = "chrome-node"
-                                break
-                            case "Edge":
-                                nodeService = "edge-node"
-                                break
-                            case "Firefox":
-                                nodeService = "firefox-node"
-                                break
-                            default:
-                                error "Unsupported browser environment: ${params.BROWSER}"
-                        }
+                        def nodeService = "${params.BROWSER.toLowerCase()}-node"
 
-                        echo "Starting selenium-hub and ${nodeService} containers using docker-compose.selenium.yml"
+                        echo "Starting selenium-hub and ${nodeService}..."
+                        sh "docker-compose -f docker-compose.selenium.yml up -d selenium-hub ${nodeService}"
 
-                        sh """
-                            docker-compose -f docker-compose.selenium.yml up -d selenium-hub ${nodeService}
-                        """
-
-                        echo "Waiting 10 seconds for containers to start..."
+                        echo "Waiting for containers..."
                         sleep 10
-
-                        int maxRetries = 5
-                        int retryCount = 0
-                        int responseCode = 0
-
-                        while (retryCount < maxRetries) {
-                            try {
-                                def responseString = sh(
-                                    script: "curl -s -o /dev/null -w '%{http_code}' http://selenium-hub:4444/status",
-                                    returnStdout: true
-                                ).trim()
-
-                                responseCode = responseString.isInteger() ? responseString.toInteger() : 0
-                            } catch (Exception e) {
-                                responseCode = 0
-                            }
-
-                            if (responseCode == 200) {
-                                echo "Selenium-hub is up and running!"
-                                break
-                            } else {
-                                echo "Selenium-hub not ready yet (HTTP ${responseCode}). Waiting 5 seconds..."
-                                sleep 5
-                                retryCount++
-                            }
-                        }
-
-                        if (responseCode != 200) {
-                            error "Selenium-hub did not become ready after ${maxRetries} attempts."
-                        }
+                        waitForSeleniumHub()
                     }
                 }
             }
         }
 
-
-        stage('Run Serenity Tests with Gradle') {
+        stage('Run Serenity Tests') {
             steps {
-                dir("${BASE_DIR}/${PROJECT_NAME}") {
+                dir("${env.PROJECT_PATH}") {
                     script {
-                        echo "Running Serenity tests for suite: ${params.SUITE} with environment: ${params.BROWSER}"
+                        def suite = (params.SUITE == 'AllTests') ? "us.opencart.runners.*Runner" : "us.opencart.runners.${params.SUITE}"
+                        def environment = "remote${params.BROWSER}"
 
-                        def testPattern = (params.SUITE == 'AllTests') ? "us.opencart.runners.*Runner" : "us.opencart.runners.${params.SUITE}"
+                        echo "Executing Serenity tests: ${suite} in ${environment}"
 
                         sh """
                             gradle clean
-                            gradle test --tests "${testPattern}" -Denvironment="remote${params.BROWSER}"
+                            gradle test --tests "${suite}" -Denvironment="${environment}"
                             gradle aggregate
                         """
                     }
@@ -110,34 +87,29 @@ pipeline {
 
         stage('Stop Selenium Grid') {
             steps {
-                dir("${BASE_DIR}/${PROJECT_NAME}") {
-                    script {
-                        echo "Stopping selenium grid containers using docker-compose.selenium.yml"
-                        sh """
-                            docker-compose -f docker-compose.selenium.yml down
-                        """
-                    }
+                dir("${env.PROJECT_PATH}") {
+                    echo "Stopping Selenium Grid..."
+                    sh "docker-compose -f docker-compose.selenium.yml down"
                 }
             }
         }
 
         stage('Publish Serenity Report') {
             steps {
-                dir("${BASE_DIR}/${PROJECT_NAME}") {
+                dir("${env.PROJECT_PATH}") {
                     script {
                         publishHTML(target: [
-                        allowMissing: false,
-                        alwaysLinkToLastBuild: true,
-                        keepAll: true,
-                        reportDir: "./target/site/serenity",
-                        reportFiles: 'index.html',
-                        reportName: "${PROJECT_NAME}-Report"
-                    ])
+                            allowMissing: false,
+                            alwaysLinkToLastBuild: true,
+                            keepAll: true,
+                            reportDir: "./target/site/serenity",
+                            reportFiles: 'index.html',
+                            reportName: "${env.PROJECT_NAME}-Report"
+                        ])
                     }
                 }
             }
         }
-
     }
 
     post {
