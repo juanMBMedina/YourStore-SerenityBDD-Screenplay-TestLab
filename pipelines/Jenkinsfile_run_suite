@@ -125,14 +125,13 @@ pipeline {
             steps {
                 dir("${BASE_DIR}/${PROJECT_NAME}") {
                     script {
-                        env.SERENITY_REPORT_PATH = "${BASE_DIR}/${PROJECT_NAME}/target/site/serenity"
                         publishHTML(target: [
                         allowMissing: false,
                         alwaysLinkToLastBuild: true,
                         keepAll: true,
-                        reportDir: env.SERENITY_REPORT_PATH,
+                        reportDir: "./target/site/serenity",
                         reportFiles: 'index.html',
-                        reportName: "${PROJECT_NAME}-Serenity-Report"
+                        reportName: "${PROJECT_NAME}-Report"
                     ])
                     }
                 }
