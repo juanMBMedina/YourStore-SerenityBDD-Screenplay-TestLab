@@ -78,6 +78,7 @@ pipeline {
                         sh """
                             gradle clean
                             gradle test --tests "${suite}" -Denvironment="${environment}" --info
+
                             gradle aggregate
                         """
                     }
