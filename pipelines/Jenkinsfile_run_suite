@@ -40,7 +40,7 @@ pipeline {
         )
         choice(
             name: 'BROWSER',
-            choices: ['Chrome', 'Edge', 'Firefox'],
+            choices: ['Chrome', 'Edge'],
             description: 'Select the browser for test execution'
         )
     }
