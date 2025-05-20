@@ -63,6 +63,7 @@ pipeline {
 
                     sh """
                         docker-compose -f docker-compose.selenium.yml up -d selenium-hub ${browser}-node
+                        gradle clean
                     """
                     waitForSeleniumGridUp(env.SELENIUM_GRID_HOST, 3, 10)
                     sh """

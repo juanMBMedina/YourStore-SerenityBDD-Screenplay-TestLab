@@ -9,6 +9,7 @@ services:
 
   chrome-node:
     image: selenium/node-chrome:latest
+    container_name: chrome-node
     shm_size: 2gb
     depends_on:
       - selenium-hub
@@ -21,6 +22,7 @@ services:
 
   firefox-node:
     image: selenium/node-firefox:latest
+    container_name: firefox-node
     shm_size: 2gb
     depends_on:
       - selenium-hub
@@ -33,6 +35,7 @@ services:
 
   edge-node:
     image: selenium/node-edge:latest
+    container_name: edge-node
     shm_size: 2gb
     depends_on:
       - selenium-hub
