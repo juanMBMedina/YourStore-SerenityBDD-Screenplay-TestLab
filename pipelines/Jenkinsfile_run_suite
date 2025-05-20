@@ -4,89 +4,62 @@ def validateExist(directory, mssg = "The element \${directory} doesn't exist.") 
     }
 }
 
-
 pipeline {
     agent any
-
-    environment {
-        BASE_DIR = '/var/jenkins_home/repos'
-        REPORTS_DIR = '/var/jenkins_home/reports'
-    }
 
     parameters {
         choice(
             name: 'SUITE',
-            choices: ['AddToCartRunner', 'LoginRunner', 'RegisterRunner', 'RegressionTestRunner', 'AllTestRunner'],
+            choices: ['AddToCartRunner', 'LoginRunner', 'RegisterRunner', 'AllTestRunner'],
             description: 'Select the test suite to run'
         )
         choice(
             name: 'BROWSER',
-            choices: ['chrome', 'edge', 'firefox'],
+            choices: ['Chrome', 'Edge', 'Firefox'],
             description: 'Select the browser for test execution'
-        )
-        string(
-            name: 'PROJECT_NAME',
-            defaultValue: 'YourStore-Selenium-POM-TestLab',
-            description: 'Project base directory name'
-        )
-        string(
-            name: 'REPO_URL',
-            defaultValue: 'git@github.com:juanMBMedina/YourStore-Selenium-POM-TestLab.git',
-            description: 'SSH repository URL'
-        )
-        string(
-            name: 'DEFAULT_BRANCH',
-            defaultValue: 'develop',
-            description: 'Repository branch to checkout'
         )
     }
 
     stages {
 
-        stage('Clone Repository') {
-            steps {
-                script {
-                    build job: 'get-repository', parameters: [
-                        string(name: 'PROJECT_NAME', value: params.PROJECT_NAME),
-                        string(name: 'REPO_URL', value: params.REPO_URL),
-                        string(name: 'CLONE_DIR', value: BASE_DIR),
-                        string(name: 'BRANCH', value: params.DEFAULT_BRANCH)
-                    ]
-                }
-            }
-        }
-
         stage('Run Selenium Tests in Docker') {
             steps {
-                dir("${BASE_DIR}/${PROJECT_NAME}") {
-                    script {
-                        echo "Running Selenium tests for suite: ${params.SUITE} on browser: ${params.BROWSER}"
-                        sh """
-                            docker-compose -f docker-compose.selenium.yml up -d selenium-hub ${params.BROWSER}-node
-                            mvn clean verify -Dtest=${params.SUITE}
-                            docker-compose -f docker-compose.selenium.yml down
+                script {
+                    def browser = params.BROWSER.toLowerCase()
+                    def suite = params.SUITE
+                    def gradleCommand = ''
 
-                        """
+                    echo "Running Selenium tests for suite: ${suite} on browser: ${params.BROWSER}"
+
+                    if (suite == 'AllTestRunner') {
+                        gradleCommand = 'gradle :test --tests "us.opencart.runners.*Runner" -Denvironment="remote' + params.BROWSER + '"'
+                    } else {
+                        gradleCommand = 'gradle :test --tests "us.opencart.runners.' + suite + '" -Denvironment="remote' + params.BROWSER + '"'
                     }
+
+                    sh """
+                        docker-compose -f docker-compose.selenium.yml up -d selenium-hub ${browser}-node
+                        gradle clean
+                        ${gradleCommand}
+                        gradle aggregate
+                        docker-compose -f docker-compose.selenium.yml down
+                    """
                 }
             }
         }
 
         stage('Store Selenium Reports') {
             steps {
-                dir("${BASE_DIR}/${PROJECT_NAME}") {
-                    script {
-                        def reportFolder = 'target/'
-                        def src = "./${reportFolder}"
-                        def now = sh(script: "date +\"%Y-%m-%d_%H-%M-%S\"", returnStdout: true).trim()
-                        def dest = "${REPORTS_DIR}/${params.PROJECT_NAME}/${reportFolder}execution_${now}"
-                        echo "Copying reports from ${src} to ${dest}"
-                        sh """
-                            mkdir -p ${dest}
-                            cd ${src}
-                            cp -r * ${dest}
-                        """
-                    }
+                script {
+                    validateExist('cucumber-reports.html', 'Cucumber report not found!')
+                    publishHTML(target: [
+                        allowMissing: false,
+                        alwaysLinkToLastBuild: true,
+                        keepAll: true,
+                        reportDir: './target/site/serenity',
+                        reportFiles: 'index.html',
+                        reportName: "${params.PROJECT_NAME}-Serenity-Report"
+                    ])
                 }
             }
         }
