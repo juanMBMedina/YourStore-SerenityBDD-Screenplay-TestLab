@@ -1,8 +1,3 @@
-def validateExist(directory, mssg = "The element \${directory} doesn't exist.") {
-    if (!fileExists(directory)) {
-        error mssg
-    }
-}
 def waitForSeleniumGridUp(String url = "http://selenium-hub:4444/status", int maxRetries = 3, int waitSeconds = 5) {
     int attempt = 0
     while (attempt < maxRetries) {
@@ -27,7 +22,9 @@ def waitForSeleniumGridUp(String url = "http://selenium-hub:4444/status", int ma
 }
 pipeline {
     agent any
-
+    env{
+        SELENIUM_GRID_HOST = "http://selenium-hub:4444/status"
+    }
     parameters {
         choice(
             name: 'SUITE',
@@ -61,7 +58,7 @@ pipeline {
                     sh """
                         docker-compose -f docker-compose.selenium.yml up -d selenium-hub ${browser}-node
                     """
-                    waitForSeleniumGridUp()
+                    waitForSeleniumGridUp(SELENIUM_GRID_HOST, 3, 10)
                     sh """
                         ${gradleCommand}
                         gradle aggregate
@@ -74,7 +71,6 @@ pipeline {
         stage('Store Serenity Reports') {
             steps {
                 script {
-                    validateExist('cucumber-reports.html', 'Cucumber report not found!')
                     publishHTML(target: [
                         allowMissing: false,
                         alwaysLinkToLastBuild: true,
