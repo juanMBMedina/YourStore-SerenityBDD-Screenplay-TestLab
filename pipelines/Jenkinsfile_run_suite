@@ -1,3 +1,26 @@
+def waitForSeleniumGridUp(String url = "http://selenium-hub:4444/status", int maxRetries = 3, int waitSeconds = 5) {
+    int attempt = 0
+    while (attempt < maxRetries) {
+        try {
+            def response = httpRequest(
+                url: url,
+                httpMode: 'GET',
+                validResponseCodes: '200'
+            )
+            echo "✅ Selenium Grid is up (HTTP ${response.status})"
+            return true
+        } catch (Exception e) {
+            attempt++
+            if (attempt >= maxRetries) {
+                error "❌ Selenium Grid is not available after ${maxRetries} attempts."
+            } else {
+                echo "⏳ Selenium Grid not available. Retrying in ${waitSeconds} seconds... (Attempt ${attempt}/${maxRetries})"
+                sleep(time: waitSeconds, unit: 'SECONDS')
+            }
+        }
+    }
+}
+
 pipeline {
     agent any
 
