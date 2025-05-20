@@ -1,28 +1,6 @@
-def waitForSeleniumGridUp(String url = "http://selenium-hub:4444/status", int maxRetries = 3, int waitSeconds = 5) {
-    int attempt = 0
-    while (attempt < maxRetries) {
-        try {
-            def response = httpRequest(
-                url: url,
-                httpMode: 'GET',
-                validResponseCodes: '200'
-            )
-            echo "✅ Selenium Grid is up (HTTP ${response.status})"
-            return true
-        } catch (Exception e) {
-            attempt++
-            if (attempt >= maxRetries) {
-                error "❌ Selenium Grid is not available after ${maxRetries} attempts."
-            } else {
-                echo "⏳ Selenium Grid not available. Retrying in ${waitSeconds} seconds... (Attempt ${attempt}/${maxRetries})"
-                sleep(time: waitSeconds, unit: 'SECONDS')
-            }
-        }
-    }
-}
 pipeline {
     agent any
-    env{
+    env {
         SELENIUM_GRID_HOST = "http://selenium-hub:4444/status"
     }
     parameters {
@@ -43,6 +21,29 @@ pipeline {
         stage('Run Serenity Tests in Docker') {
             steps {
                 script {
+                    def waitForSeleniumGridUp = { String url, int maxRetries = 3, int waitSeconds = 5 ->
+                        int attempt = 0
+                        while (attempt < maxRetries) {
+                            try {
+                                def response = httpRequest(
+                                    url: url,
+                                    httpMode: 'GET',
+                                    validResponseCodes: '200'
+                                )
+                                echo "✅ Selenium Grid is up (HTTP ${response.status})"
+                                return true
+                            } catch (Exception e) {
+                                attempt++
+                                if (attempt >= maxRetries) {
+                                    error "❌ Selenium Grid is not available after ${maxRetries} attempts."
+                                } else {
+                                    echo "⏳ Selenium Grid not available. Retrying in ${waitSeconds} seconds... (Attempt ${attempt}/${maxRetries})"
+                                    sleep(time: waitSeconds, unit: 'SECONDS')
+                                }
+                            }
+                        }
+                    }
+
                     def browser = params.BROWSER.toLowerCase()
                     def suite = params.SUITE
                     def gradleCommand = ''
@@ -50,18 +51,22 @@ pipeline {
                     echo "Running Serenity tests for suite: ${suite} on browser: ${params.BROWSER}"
 
                     if (suite == 'AllTestRunner') {
-                        gradleCommand = 'gradle --tests "us.opencart.runners.*Runner" -Denvironment="remote' + params.BROWSER + ' --info"'
+                        gradleCommand = 'gradle --tests "us.opencart.runners.*Runner" -Denvironment=remote' + params.BROWSER + ' --info'
                     } else {
-                        gradleCommand = 'gradle --tests "us.opencart.runners.' + suite + '" -Denvironment="remote' + params.BROWSER + ' --info"'
+                        gradleCommand = 'gradle --tests "us.opencart.runners.' + suite + '" -Denvironment=remote' + params.BROWSER + ' --info'
                     }
 
                     sh """
                         docker-compose -f docker-compose.selenium.yml up -d selenium-hub ${browser}-node
                     """
-                    waitForSeleniumGridUp(SELENIUM_GRID_HOST, 3, 10)
+                    waitForSeleniumGridUp(env.SELENIUM_GRID_HOST, 3, 10)
+
                     sh """
                         ${gradleCommand}
                         gradle aggregate
+                    """
+
+                    sh """
                         docker-compose -f docker-compose.selenium.yml down
                     """
                 }
@@ -77,7 +82,7 @@ pipeline {
                         keepAll: true,
                         reportDir: './target/site/serenity',
                         reportFiles: 'index.html',
-                        reportName: "${params.PROJECT_NAME}-Serenity-Report"
+                        reportName: "Serenity Report"
                     ])
                 }
             }
