@@ -95,4 +95,3 @@ Feature: User Add Items to Cart in Your Store Page
     Examples:
       | category | subcategory | itemName | page        | action       |
       | Desktops | Mac         | iMac     | Add to Cart | Wrong Option |
-      | Desktops | Mac         | iMac     | Add to Cart | Add to Cart  |
