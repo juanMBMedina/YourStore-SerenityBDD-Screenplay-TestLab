@@ -7,7 +7,7 @@ This repository contains the implementation of an automated testing plan develop
 The main objective of this project is to demonstrate a robust and maintainable test automation framework using Java, Gradle, Cucumber, and the Screenplay design pattern.
 
 The repository includes:
-- Test cases automated with Selenium WebDriver.
+- Test cases automated with Serenity BDD.
 - Screenplay structure for reusable and maintainable components.
 - Test execution through Cucumber and JUnit.
 - Cucumber integration for reports.
@@ -65,11 +65,6 @@ Clone this repository:
 ```bash
 git clone git@github.com:juanMBMedina/YourStore-SerenityBdd-Screenplay-TestLab.git
 cd YourStore-SerenityBdd-Screenplay-TestLab
-```
-
-To install dependencies and run tests:
-```bash
-mvn clean test
 ```
 
 To run tests with a specific browser (e.g., Edge) and remote mode, remote mode have the parameter headless by default:
