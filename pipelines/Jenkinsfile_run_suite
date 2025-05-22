@@ -54,13 +54,7 @@ pipeline {
                     def gradleCommand = ''
 
                     echo "Running Serenity tests for suite: ${suite} on browser: ${params.BROWSER}"
-
-                    if (suite == 'AllTestRunner') {
-                        gradleCommand = 'gradle :test --tests "us.opencart.runners.*Runner" -Denvironment=remote' + params.BROWSER + ' --info'
-                    } else {
-                        gradleCommand = 'gradle :test --tests "us.opencart.runners.' + suite + '" -Denvironment=remote' + params.BROWSER + ' --info'
-                    }
-
+                    gradleCommand = 'gradle :test --tests "us.opencart.runners.' + suite + '" -Denvironment=remote' + params.BROWSER + ' --info'
                     sh """
                         docker-compose -f docker-compose.selenium.yml up -d selenium-hub ${browser}-node
                         gradle clean
