@@ -57,7 +57,9 @@ pipeline {
                     gradleCommand = 'gradle :test --tests "us.opencart.runners.' + suite + '" -Denvironment=remote' + params.BROWSER + ' --info'
                     sh """
                         docker-compose -f docker-compose.selenium.yml up -d selenium-hub ${browser}-node
-                        gradle clean
+                        gradle clean cleanTest compileTestJava --no-build-cache --refresh-dependencies
+                        rm -rf target/site
+                        rm -rf .serenity
                     """
                     waitForSeleniumGridUp(env.SELENIUM_GRID_HOST, 3, 10)
                     sh """
