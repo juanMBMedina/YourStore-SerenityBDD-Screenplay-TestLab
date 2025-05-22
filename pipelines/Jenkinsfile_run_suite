@@ -62,24 +62,7 @@ pipeline {
                     waitForSeleniumGridUp(env.SELENIUM_GRID_HOST, 3, 10)
                     sh """
                         ${gradleCommand}
-                        gradle aggregate
-                        docker-compose -f docker-compose.selenium.yml down
                     """
-                }
-            }
-        }
-
-        stage('Store Serenity Reports') {
-            steps {
-                script {
-                    publishHTML(target: [
-                        allowMissing: false,
-                        alwaysLinkToLastBuild: true,
-                        keepAll: true,
-                        reportDir: './target/site/serenity',
-                        reportFiles: 'index.html',
-                        reportName: "${params.SUITE}-Serenity-Report"
-                    ])
                 }
             }
         }
@@ -93,7 +76,22 @@ pipeline {
             echo 'Tests failed. Please check the execution logs and generated report.'
         }
         always {
-            echo 'Pipeline execution finished.'
+            script{
+                sh """
+                    gradle aggregate
+                    docker-compose -f docker-compose.selenium.yml down
+                """
+                echo 'Store Serenity Reports'
+                publishHTML(target: [
+                    allowMissing: false,
+                    alwaysLinkToLastBuild: true,
+                    keepAll: true,
+                    reportDir: './target/site/serenity',
+                    reportFiles: 'index.html',
+                    reportName: "${params.SUITE}-Serenity-Report"
+                ])
+                echo 'Pipeline execution finished.'
+            }
         }
     }
 }
