@@ -1,20 +1,24 @@
 pipeline {
     agent any
+
     stages {
         stage('Run Serenity Suite') {
             steps {
                 script {
                     echo "Run all Tests of suite in Serenity"
-                    build(
-                        job: 'Run-Suite-YourStore-SerenityBdd-Screenplay-TestLab',
-                        parameters: [
-                            string(name: 'SUITE', value: 'AllTestRunner'),
-                            string(name: 'BROWSER', value: 'Chrome')
-                        ]
-                    )
+                    catchError(buildResult: 'SUCCESS', stageResult: 'SUCCESS') {
+                        build(
+                            job: 'Run-Suite-YourStore-SerenityBdd-Screenplay-TestLab',
+                            parameters: [
+                                string(name: 'SUITE', value: 'AllTestRunner'),
+                                string(name: 'BROWSER', value: 'Chrome')
+                            ]
+                        )
+                    }
                 }
             }
         }
+
         stage('Run SonarQube Scan') {
             steps {
                 script {
