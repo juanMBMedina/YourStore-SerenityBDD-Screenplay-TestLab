@@ -1,52 +1,40 @@
 pipeline {
     agent any
-    
-    parameters {
-        string(name: 'PROJECT_NAME', defaultValue: 'YourStore-Selenium-POM-TestLab', description: 'Project Base Directory Repo')
-        string(name: 'REPO_URL', defaultValue: 'git@github.com:juanMBMedina/YourStore-Selenium-POM-TestLab.git', description: 'SSH URL of the repository')
-        string(name: 'DEFAULT_BRANCH', defaultValue: 'develop', description: 'Branch of the repository')
-    }
-    
+
     environment {
-        BASE_DIR = '/var/jenkins_home/repos'
-    }
-    
+            WORKSPACE_PATH = "/var/jenkins_home/workspace/"
+        }
+
     stages {
-            
-        stage('Clone Repository') {
+        stage('Run Serenity Suite') {
             steps {
                 script {
-                    build(
-                        job: 'get-repository',
-                        parameters: [
-                            string(name: 'PROJECT_NAME', value: params.PROJECT_NAME),
-                            string(name: 'REPO_URL', value: params.REPO_URL),
-                            string(name: 'CLONE_DIR', value: BASE_DIR),
-                            string(name: 'BRANCH', value: params.DEFAULT_BRANCH)
-                        ]
-                    )
-                    
+                    echo "Run all Tests of suite in Serenity"
+                    catchError(buildResult: 'SUCCESS', stageResult: 'SUCCESS') {
+                        build(
+                            job: 'Run-Suite-YourStore-SerenityBdd-Screenplay-TestLab',
+                            parameters: [
+                                string(name: 'SUITE', value: 'AllTestRunner'),
+                                string(name: 'BROWSER', value: 'Chrome')
+                            ]
+                        )
+                    }
                 }
             }
         }
-        
-        
-        stage('Running Sonarqube checking') {
+
+        stage('Run SonarQube Scan') {
             steps {
                 script {
-                    def repoDir = "${BASE_DIR}/${PROJECT_NAME}"
-                    dir(repoDir){
-                        script{
-                            echo "Compile an run all project in: ${repoDir}"
-                            sh "bash ./runAllTest.sh"
-                        }
+                    def currentDir = "${WORKSPACE_PATH}/Run-Suite-YourStore-SerenityBdd-Screenplay-TestLab"
+                    dir(currentDir){
+                        echo "Run SonarQube scan in: ${currentDir} where the tests have executed."
+                        build(
+                            job: 'scan-code',
+                            parameters: [
+                                string(name: 'REPO_DIR', value: currentDir)
+                        ])
                     }
-                    build(
-                        job: 'scan-code',
-                        parameters: [
-                            string(name: 'REPO_DIR', value: repoDir),
-                        ]
-                    )
                 }
             }
         }

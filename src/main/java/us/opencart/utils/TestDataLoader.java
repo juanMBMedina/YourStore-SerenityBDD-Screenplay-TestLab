@@ -3,6 +3,7 @@ package us.opencart.utils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import us.opencart.exceptions.TestDataLoadException;
 import us.opencart.models.LoginUser;
+import us.opencart.models.RegisterUser;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,20 +44,27 @@ public class TestDataLoader {
         }
     }
 
-    public static LoginUser loadCorrectUser() {
+    public static LoginUser loadCorrectUserLogin() {
         return load("dataLoginFeature.json", "loginExistUser", LoginUser.class);
     }
 
-    public static LoginUser loadWrongLabelUser() {
+    public static LoginUser loadWrongLabelUserLogin() {
         // Can Throws: TestDataLoadException
         return load("wrongDataLoginFeature.json", "loginWrongUser", LoginUser.class);
     }
 
-    public static LoginUser loadKeyDoesNotExistUser() {
+    public static LoginUser loadKeyDoesNotExistUserLogin() {
         // Can Throws: IllegalArgumentException
         return load("dataLoginFeature.json", "noKey", LoginUser.class);
 
     }
 
+    public static RegisterUser loadExistUserRegister() {
+        return load("dataRegisterFeature.json", "registerUser", RegisterUser.class);
+    }
+
+    public static RegisterUser loadExistUserWithoutPrivacyRegister() {
+        return load("dataRegisterFeature.json", "registerUserNoPrivacy", RegisterUser.class);
+    }
 }
 
