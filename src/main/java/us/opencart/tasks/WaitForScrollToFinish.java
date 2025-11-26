@@ -1,19 +1,19 @@
 package us.opencart.tasks;
 
-
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Task;
-import net.serenitybdd.screenplay.Tasks;
+import net.serenitybdd.screenplay.abilities.BrowseTheWeb;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
-import net.serenitybdd.screenplay.abilities.BrowseTheWeb;
 
 public class WaitForScrollToFinish implements Task {
 
     private final long timeoutMillis;
+    private final long pollIntervalMillis;
 
-    public WaitForScrollToFinish(long timeoutMillis) {
+    public WaitForScrollToFinish(long timeoutMillis, long pollIntervalMillis) {
         this.timeoutMillis = timeoutMillis;
+        this.pollIntervalMillis = pollIntervalMillis;
     }
 
     @Override
@@ -22,24 +22,39 @@ public class WaitForScrollToFinish implements Task {
         JavascriptExecutor js = (JavascriptExecutor) driver;
 
         long startTime = System.currentTimeMillis();
-        long lastPosition = -1;
+        long lastScrollPosition = -1;
 
         while (System.currentTimeMillis() - startTime < timeoutMillis) {
-            long currentPosition = ((Long) js.executeScript("return window.pageYOffset;"));
-            if (currentPosition == lastPosition) {
-                return; // scroll detenido
+            String readyState = (String) js.executeScript("return document.readyState;");
+            if (!"complete".equals(readyState)) {
+                sleep(pollIntervalMillis);
+                continue;
             }
-            lastPosition = currentPosition;
 
-            try {
-                Thread.sleep(50); // espera pequeña entre chequeos
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
+            long currentScrollPosition = ((Number) js.executeScript("return window.pageYOffset;")).longValue();
+            if (currentScrollPosition == lastScrollPosition) {
+                return;
             }
+            lastScrollPosition = currentScrollPosition;
+
+            sleep(pollIntervalMillis);
+        }
+
+    }
+
+    private void sleep(long millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         }
     }
 
     public static WaitForScrollToFinish forUpTo(long timeoutMillis) {
-        return Tasks.instrumented(WaitForScrollToFinish.class, timeoutMillis);
+        return new WaitForScrollToFinish(timeoutMillis, 100);
+    }
+
+    public static WaitForScrollToFinish forUpTo(long timeoutMillis, long pollIntervalMillis) {
+        return new WaitForScrollToFinish(timeoutMillis, pollIntervalMillis);
     }
 }

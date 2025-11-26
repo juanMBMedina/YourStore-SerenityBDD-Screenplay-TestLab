@@ -8,6 +8,7 @@ import us.opencart.exceptions.OptionNotFoundException;
 import us.opencart.models.SearchItemNavBar;
 import us.opencart.tasks.NavigateTo;
 import us.opencart.tasks.SearchItem;
+import us.opencart.tasks.WaitForScrollToFinish;
 import us.opencart.tasks.items.PerformActionItemBody;
 import us.opencart.tasks.items.PerformActionItemTable;
 import us.opencart.ui.HomePage;

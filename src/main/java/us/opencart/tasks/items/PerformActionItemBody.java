@@ -3,6 +3,7 @@ package us.opencart.tasks.items;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Tasks;
 import net.serenitybdd.screenplay.actions.Click;
+import us.opencart.tasks.WaitForScrollToFinish;
 import us.opencart.ui.HomePage;
 
 
@@ -43,6 +44,7 @@ public class PerformActionItemBody extends PerformActionItemBase {
                 actor.wasAbleTo(Click.on(HomePage.ADD_TO_CART_BUTTON.of(itemName, itemOption)));
                 break;
         }
+        actor.wasAbleTo(WaitForScrollToFinish.forUpTo(5000));
     }
 
 }
